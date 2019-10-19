@@ -1,6 +1,11 @@
 module Main where
 
-import Graphics.Gloss.Interface.IO.Game
+import Level
+
+import Graphics.Gloss
 
 main :: IO ()
-main = playIO (InWindow "Pac-Man" (200, 200) (0, 0)) black (Circle 80)
+main = display (InWindow "Pac-Man" (400, 500) (10, 10)) 
+               black 
+               30
+               (pictures (showGridPure (buildGrid initGrid) (-180) (-230)))

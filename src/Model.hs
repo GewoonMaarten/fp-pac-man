@@ -21,7 +21,7 @@ data Player = Player Transformation Lives Score
 
 -- TODO: move to seperate file
 type CollectibleType = PacDot | Energizer | Fruit
-type CollectibleState = Collected | Availible
+type CollectibleState = Collected | Available
 type Collectible = Collectible CollectibleState CollectibleType
 
 -- TODO: move to Grid file
