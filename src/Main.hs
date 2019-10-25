@@ -3,9 +3,36 @@ module Main where
 import Level
 
 import Graphics.Gloss
+import Graphics.Gloss.Interface.IO.Game
 
 main :: IO ()
-main = display (InWindow "Pac-Man" (400, 500) (10, 10)) 
-               black 
-               30
-               (pictures (showGridPure (buildGrid initGrid) (-180) (-230)))
+main = playIO (InWindow "Pac-Man" (400, 500) (10, 10)) -- Display mode
+       black -- Background Color
+       30 -- Number of steps per second
+       intialGameState -- Initial world
+       draw -- (world -> IO Picture)
+       input -- (Event -> world -> IO world)
+       update -- (Float -> world -> IO world)
+
+
+data GameState = GameState {
+    unLevel :: Grid
+}               
+
+intialGameState :: GameState
+intialGameState = GameState (buildGrid initGrid)
+
+
+draw :: GameState -> IO Picture
+draw = return . drawPure
+
+
+drawPure :: GameState -> Picture
+drawPure g = pictures ((showGrid $ unLevel g) (-180) (-230))
+
+input :: Event -> GameState -> IO GameState
+input = undefined
+
+
+update :: Float -> GameState -> IO GameState
+update = undefined

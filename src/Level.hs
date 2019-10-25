@@ -2,6 +2,24 @@ module Level where
 
 import Graphics.Gloss
 
+type Grid = [[GridItem]] 
+
+data CollectibleType = PacDot 
+    | Energizer 
+    | Fruit 
+    deriving (Show)
+
+data CollectibleState = Collected 
+    | Available 
+    deriving (Show)
+
+data GridItem = Empty 
+    | Door
+    | Wall 
+    | SpawnPoint 
+    | Collectible CollectibleState CollectibleType
+    deriving (Show)
+
 gridSize = 20
 
 initGrid :: [[Int]]
@@ -30,56 +48,38 @@ initGrid = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 wallColor = color (makeColorI 23 24 254 255)
 dotColor  = color (makeColorI 254 169 164 255)
 
-data CollectibleType = PacDot 
-    | Energizer 
-    | Fruit 
-    deriving (Show)
-
-data CollectibleState = Collected 
-    | Available 
-    deriving (Show)
-
-data GridItem = Empty 
-    | Door
-    | Wall 
-    | SpawnPoint 
-    | Collectible CollectibleState CollectibleType
-    deriving (Show)
-
 class Drawable a where
-    draw :: a -> Float -> Float -> Picture
+    drawItem :: a -> Float -> Float -> Picture
 
 instance Drawable GridItem where
     -- Nothing
-    draw Empty x y = translate x y 
+    drawItem Empty x y = translate x y 
         $ color black 
         $ rectangleSolid gridSize gridSize
     -- Wall
-    draw Wall x y = translate x y 
+    drawItem Wall x y = translate x y 
         $ wallColor 
         $ rectangleSolid gridSize gridSize
     -- Door
-    draw Door x y = translate x y 
+    drawItem Door x y = translate x y 
         $ color black 
         $ rectangleSolid gridSize gridSize
     -- SpawnPoint
-    draw SpawnPoint x y = translate x y 
+    drawItem SpawnPoint x y = translate x y 
         $ color black 
         $ rectangleSolid gridSize gridSize
     -- Pac-Dot
-    draw (Collectible Available PacDot) x y = translate x y 
+    drawItem (Collectible Available PacDot) x y = translate x y 
         $ dotColor 
         $ rectangleSolid (gridSize / 2) (gridSize / 2)
     -- Energizer
-    draw (Collectible Available Energizer) x y = translate x y 
+    drawItem (Collectible Available Energizer) x y = translate x y 
         $ dotColor 
         $ circleSolid (gridSize / 2)
     -- Fruit
-    draw (Collectible Available Fruit) x y = translate x y 
+    drawItem (Collectible Available Fruit) x y = translate x y 
         $ color red 
         $ circleSolid (gridSize / 2)
-
-type Grid = [[GridItem]] 
 
 -- Parse to int list to an grid
 buildGrid :: [[Int]] -> Grid
@@ -99,4 +99,4 @@ showGrid (gis:grid) x y = (showRow gis x y) ++ (showGrid grid x (y - gridSize))
     where
         showRow :: [GridItem] -> Float -> Float -> [Picture]
         showRow [] _ _ = []
-        showRow (g:gis) x y = (draw g x y) : (showRow gis (x + gridSize) y)
+        showRow (g:gis) x y = (drawItem g x y) : (showRow gis (x + gridSize) y)
