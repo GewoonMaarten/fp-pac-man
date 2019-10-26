@@ -1,0 +1,41 @@
+@startuml
+
+
+
+[*] --> Initial
+Initial: GameState Home []
+
+note right of Initial
+data GameState = GameState {
+    Scene :: Scene
+    Level :: Grid
+}
+
+type Grid = [[GridItem]]
+
+data GridItem = Empty
+              | Door
+              | Wall
+              | SpawnPoint
+              | Collectible CollectibleState CollectibleType
+              | Player Orientation Lives Score 
+              | Ghosts (Ghost, Ghost, Ghost, Ghost)                        
+  deriving (Show)
+end note
+
+Initial --> Playing : EnterPressed
+Playing: GameState Level [[GridItem]]
+
+Playing -> Pause : EscPressed
+Pause: GameState Pause [[GridItem]]
+
+Pause --> Playing : EscPressed
+Pause --> Initial : QPressed
+
+Playing --> GameOver : LivesUp
+GameOver: GameState GameOver []
+
+
+GameOver --> Initial : EnterPressed
+
+@enduml
