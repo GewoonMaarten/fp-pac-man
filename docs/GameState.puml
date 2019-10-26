@@ -30,7 +30,7 @@ Playing -> Pause : EscPressed
 Pause: GameState Pause [[GridItem]]
 
 Pause --> Playing : EscPressed
-Pause --> Initial : QPressed
+Pause --> Initial : EnterPressed
 
 Playing --> GameOver : LivesUp
 GameOver: GameState GameOver []
