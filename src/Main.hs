@@ -36,7 +36,7 @@ performUpdate :: Float -> GameState -> GameState
 performUpdate dt gs = gs { unPacMan = performPacManUpdate dt (unPacMan gs) }
 
 performPacManUpdate :: Float -> PacMan -> PacMan
-performPacManUpdate dt = move (dt * 2)
+performPacManUpdate dt = move (dt * 4)
     where
         move _ pm@(PacMan [_] _) = pm
         move dt pm
