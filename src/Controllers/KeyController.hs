@@ -12,7 +12,7 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-    Home     -> GameState Play (buildGrid initGrid)
+    Home     -> gameState { unScene = Play, unLevel = (buildGrid initGrid) }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key

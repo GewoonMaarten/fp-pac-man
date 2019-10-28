@@ -2,7 +2,8 @@ module Model where
 
 data GameState = GameState {
     unScene :: Scene,
-    unLevel :: Grid
+    unLevel :: Grid,
+    unPacMan :: PacMan
 }
 
 data Scene = Play | Pause | Home | GameOver
@@ -24,3 +25,12 @@ data GridItem = Empty
               | SpawnPoint
               | Collectible CollectibleState CollectibleType
   deriving (Show)
+
+data PathNode = Pn Int Int
+type Path = [PathNode]
+type NodeDistance = Float
+
+data PacMan = PacMan {
+    unPath :: Path,
+    unDistance :: NodeDistance
+}
