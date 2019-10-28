@@ -20,7 +20,8 @@ intialGameState :: GameState
 intialGameState = GameState Home [] initialPacMan
 
 initialPacMan :: PacMan
-initialPacMan = PacMan [Pn 0 0, Pn 100 0, Pn 100 100, Pn 0 100, Pn 0 0] 1
+-- initialPacMan = PacMan [Pn 0 0, Pn 100 0, Pn 100 100, Pn 0 100, Pn 0 0] 1
+initialPacMan = PacMan [Pn 9 7] 1
 
 draw :: GameState -> IO Picture
 draw = return . drawView
@@ -35,7 +36,7 @@ performUpdate :: Float -> GameState -> GameState
 performUpdate dt gs = gs { unPacMan = performPacManUpdate dt (unPacMan gs) }
 
 performPacManUpdate :: Float -> PacMan -> PacMan
-performPacManUpdate dt = move (dt * 30)
+performPacManUpdate dt = move (dt * 2)
     where
         move _ pm@(PacMan [_] _) = pm
         move dt pm

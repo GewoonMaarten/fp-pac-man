@@ -21,7 +21,10 @@ draw Home     _         = textScale $ color white $ text "Home"
 draw Pause    _         = textScale $ color white $ text "Pause"
 draw gameOver _         = textScale $ color white $ text "Game Over"
 
-showPacMan pm = uncurry translate (actual pm) $ color yellow $ circleSolid 10
+showPacMan pm = t pm $ color yellow $ circleSolid 10
+  where
+    t pm = translate x (-y) 
+      where (x, y) = ((-180, -175) Pt.+ 20 Pt.* (actual pm))
 
 actual (PacMan [p] _) = toVector p
 actual (PacMan (a:b:_) d) = vb Pt.+ (d Pt.* n)
