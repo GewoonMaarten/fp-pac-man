@@ -12,11 +12,13 @@ data Ghost = Ghost {
     unType :: GhostType
 }
 
-initialGhost t = Ghost (P [Pn 9 7] 1) t
+initialGhost Blinky = Ghost (P [Pn  6  7, Pn 12  7] 6) Blinky
+initialGhost Inky   = Ghost (P [Pn  6 11, Pn  6  7] 4) Inky
+initialGhost Pinky  = Ghost (P [Pn 12  7, Pn 12 11] 4) Pinky
+initialGhost Clyde  = Ghost (P [Pn 12 11, Pn  6 11] 6) Clyde
 
-performGhostUpdate :: Float -> Ghost -> Ghost
-performGhostUpdate dt g = g {
-  unPath = movePath (dt * 4) (unPath g)
+performGhostUpdate gs dt g = g {
+  unPath = movePath' (ghostFn gs) (dt * 4) (unPath g)
 }
 
 showGhost (Ghost p t) = translate x (-y) $ c t $ circleSolid 5
@@ -26,4 +28,4 @@ showGhost (Ghost p t) = translate x (-y) $ c t $ circleSolid 5
     c Inky   = color blue
     c Pinky  = color pink
     c Clyde  = color orange
-    pink = makeColorI 255 192 203 0
+    pink = makeColorI 255 192 203 255

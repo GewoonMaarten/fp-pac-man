@@ -33,5 +33,5 @@ update dt = return . performUpdate dt
 performUpdate :: Float -> GameState -> GameState
 performUpdate dt gs = gs { 
     unPacMan = performPacManUpdate dt (unPacMan gs),
-    unGhosts = map (performGhostUpdate dt) (unGhosts gs)
+    unGhosts = map (performGhostUpdate gs dt) (unGhosts gs)
 }

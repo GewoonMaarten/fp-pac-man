@@ -28,12 +28,27 @@ locationImp (a:b:_) d = vb Pt.+ (d Pt.* n)
 toVector :: PathNode -> Vector
 toVector (Pn x y) = (fromIntegral x, fromIntegral y)
 
-movePath _  p@(P [_] _) = p
-movePath dt p
-  | nd <= 0   = movePath (-nd) $ next p
+{- MOVE -}
+
+-- concrete default movePath function
+movePath = movePath' nextFn
+
+-- generic movePath function
+-- nfn gets called when the next node is reached
+-- this is used to implement custom behaviour at waypoints
+movePath' _   _  p@(P [_] _) = p
+movePath' nfn dt p
+  | nd <= 0   = movePath' nfn (-nd) $ nfn p
   | otherwise = p { unDistance = nd }
   where 
     nd = (unDistance p) - dt
-    next (P (_:npns) _) = P npns $ dif npns
-    dif [_] = 0
-    dif ((Pn xa ya):(Pn xb yb):_) = fromIntegral $ abs $ (xb - xa) + (yb - ya)
+
+-- just move to the next node
+nextFn (P (_:npns) _) = P npns $ newDistance npns
+
+-- implement ghost choice using GameState at this level
+ghostFn gs p@(P (a:b:_) _) = P [b, a] $ newDistance [b, a]
+
+newDistance [_] = 0
+-- we can cheat vector length logic because we always move in a single direction
+newDistance ((Pn xa ya):(Pn xb yb):_) = fromIntegral $ abs $ (xb - xa) + (yb - ya)
