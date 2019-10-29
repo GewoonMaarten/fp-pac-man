@@ -1,11 +1,13 @@
 module Model where
 
-import PacMan
+import Models.PacMan
+import Models.Ghost
 
 data GameState = GameState {
     unScene :: Scene,
     unLevel :: Grid,
-    unPacMan :: PacMan
+    unPacMan :: PacMan,
+    unGhosts :: [Ghost]
 }
 
 data Scene = Play | Pause | Home | GameOver

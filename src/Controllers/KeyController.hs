@@ -4,7 +4,8 @@ module Controllers.KeyController
 where
 
 import           Model
-import           PacMan
+import           Models.PacMan
+import           Utils.Path
 import           Controllers.Level
 import           Graphics.Gloss.Interface.IO.Game
 import           Data.Fixed(mod')
