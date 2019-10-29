@@ -42,7 +42,7 @@ drawItem s Wall x y =
   translate x y $ wallColor $ rectangleSolid s s
 -- Door
 drawItem s Door x y = let doorSize = s / 5 in
-  translate x y $ dotColor $ rectangleSolid doorSize s
+  translate x y $ dotColor $ rectangleSolid s doorSize
 -- SpawnPoint
 drawItem s SpawnPoint x y =
   translate x y $ color black $ rectangleSolid s s
@@ -72,12 +72,12 @@ buildGrid gridItems x y s = Grid (map buildRow gridItems) x y s
 -- Parse the grid to a list of pictures with coordinates for an offset
 -- ToDo: make this not so weird.
 showGrid :: Grid -> [Picture]
-showGrid grid = foldl showRow [(translate x y blank)] gridItems
+showGrid grid = foldr showRow [(translate x y blank)] gridItems
   where
-    showRow :: [Picture] -> [GridItem] -> [Picture]
-    showRow ps@(Translate _ y2 _:_) gis = foldl showGridItem [(translate x (y2 + s) blank)] gis ++ ps
-    showGridItem :: [Picture] -> GridItem -> [Picture]
-    showGridItem ps@(Translate x2 y2 _:_) gi = drawItem s gi (x2 + s) y2 : ps
+    showRow :: [GridItem] -> [Picture] -> [Picture]
+    showRow gis ps@(Translate _ y2 _:_)  = foldr showGridItem [(translate x (y2 + s) blank)] gis ++ ps
+    showGridItem :: GridItem -> [Picture] -> [Picture]
+    showGridItem gi ps@(Translate x2 y2 _:_)  = drawItem s gi (x2 + s) y2 : ps
     x         = getGridX grid
     y         = getGridY grid
     s         = getGridSize grid 
