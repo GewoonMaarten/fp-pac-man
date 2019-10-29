@@ -4,8 +4,10 @@ module Controllers.KeyController
 where
 
 import           Model
+import           PacMan
 import           Controllers.Level
 import           Graphics.Gloss.Interface.IO.Game
+import           Data.Fixed(mod')
 
 inputHandler :: Event -> GameState -> GameState
 -- Enter Key
@@ -36,7 +38,8 @@ inputHandler _ gameState = gameState
 scene s fn gameState = if unScene gameState == s then fn gameState else gameState
 moveFn dirFn gameState = gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
-move level step pm@(PacMan [pn] p) = pm {
+move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
+move level step pm@(PacMan [pn] _) = pm {
   unPath = [pn, npn],
   unDistance = ln pn npn
 }
@@ -49,5 +52,23 @@ move level step pm@(PacMan [pn] p) = pm {
     canPass (Collectible _ _) = True
     canPass _                 = False
     ln (Pn x1 y1) (Pn x2 y2) = fromIntegral $ abs $ (x2 - x1) + (y2 - y1)
-move _ _ pm = pm
-
+move level step pm@(PacMan (a:b:_) d) = if canPass $ get (step upN) then go else pm
+  where 
+    go = pm {
+      unPath     = [a, (uncurry Pn) upN, (uncurry Pn) $ next (step upN)],
+      unDistance = rd
+    }
+    upN      = upcomingNode a b d
+    rd       = d `mod'` 1
+    
+    next p = if canPass $ get $ step p then next (step p) else p
+    get (x, y) = level !! y !! x
+    canPass Empty             = True
+    canPass (Collectible _ _) = True
+    canPass _                 = False
+-- find direction
+-- Find immedient coords
+-- [a]
+-- can move to step? -> change direction
+-- move to next node using direction
+-- recursive n times
