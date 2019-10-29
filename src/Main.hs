@@ -1,6 +1,7 @@
 module Main where
 
 import           Model
+import           PacMan
 import           View
 import           Controllers.KeyController
 
@@ -18,10 +19,6 @@ main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
 
 intialGameState :: GameState
 intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan
-
-initialPacMan :: PacMan
--- initialPacMan = PacMan [Pn 0 0, Pn 100 0, Pn 100 100, Pn 0 100, Pn 0 0] 1
-initialPacMan = PacMan [Pn 9 7] 1
 
 draw :: GameState -> IO Picture
 draw = return . drawView
