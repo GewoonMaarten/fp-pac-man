@@ -9,7 +9,12 @@ data GameState = GameState {
 data Scene = Play | Pause | Home | GameOver
   deriving(Eq)
 
-type Grid = [[GridItem]]
+data Grid = Grid {
+  getGridItems :: [[GridItem]],
+  getGridX :: Float,
+  getGridY :: Float,
+  getGridSize :: Float
+}
 
 data CollectibleType = PacDot
                      | Energizer

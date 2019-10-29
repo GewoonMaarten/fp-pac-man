@@ -3,18 +3,16 @@ module Controllers.Level where
 import           Graphics.Gloss
 import           Model
 
-gridSize = 20
-
-initGrid :: [[Int]]
-initGrid =
+initialGrid :: [[Int]]
+initialGrid =
   [ [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
   , [1, 4, 4, 4, 4, 4, 4, 4, 4, 1, 4, 4, 4, 4, 4, 4, 4, 4, 1]
   , [1, 4, 1, 1, 4, 1, 1, 1, 4, 1, 4, 1, 1, 1, 4, 1, 1, 4, 1]
   , [1, 4, 4, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4, 1]
   , [1, 4, 1, 1, 4, 1, 4, 1, 1, 1, 1, 1, 4, 1, 4, 1, 1, 4, 1]
   , [1, 4, 4, 4, 4, 1, 4, 4, 4, 1, 4, 4, 4, 1, 4, 4, 4, 4, 1]
-  , [1, 1, 1, 1, 4, 1, 1, 1, 0, 1, 0, 1, 1, 1, 4, 1, 0, 0, 0]
-  , [0, 0, 0, 1, 4, 1, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 1, 1, 1]
+  , [1, 1, 1, 1, 4, 1, 1, 1, 0, 1, 0, 1, 1, 1, 4, 1, 1, 1, 1]
+  , [0, 0, 0, 1, 4, 1, 0, 0, 0, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0]
   , [1, 1, 1, 1, 4, 1, 0, 1, 1, 3, 1, 1, 0, 1, 4, 1, 1, 1, 1]
   , [4, 4, 4, 4, 4, 4, 0, 1, 2, 2, 2, 1, 0, 4, 4, 4, 4, 4, 4]
   , [1, 1, 1, 1, 4, 0, 0, 1, 1, 1, 1, 1, 0, 0, 4, 1, 1, 1, 1]
@@ -35,33 +33,32 @@ wallColor = color (makeColorI 23 24 254 255)
 
 dotColor = color (makeColorI 254 169 164 255)
 
-drawItem :: GridItem -> Float -> Float -> Picture
+drawItem :: Float -> GridItem -> Float -> Float -> Picture
 -- Nothing
-drawItem Empty x y =
-  translate x y $ color black $ rectangleSolid gridSize gridSize
+drawItem s Empty x y =
+  translate x y $ color black $ rectangleSolid s s
 -- Wall
-drawItem Wall x y =
-  translate x y $ wallColor $ rectangleSolid gridSize gridSize
+drawItem s Wall x y =
+  translate x y $ wallColor $ rectangleSolid s s
 -- Door
-drawItem Door x y =
-  let doorSize = 5
-  in  translate x y $ dotColor $ rectangleSolid gridSize doorSize
+drawItem s Door x y = let doorSize = s / 5 in
+  translate x y $ dotColor $ rectangleSolid doorSize s
 -- SpawnPoint
-drawItem SpawnPoint x y =
-  translate x y $ color black $ rectangleSolid gridSize gridSize
+drawItem s SpawnPoint x y =
+  translate x y $ color black $ rectangleSolid s s
 -- Pac-Dot
-drawItem (Collectible Available PacDot) x y =
-  translate x y $ dotColor $ rectangleSolid (gridSize / 4) (gridSize / 4)
+drawItem s (Collectible Available PacDot) x y =
+  translate x y $ dotColor $ rectangleSolid (s / 4) (s / 4)
 -- Energizer
-drawItem (Collectible Available Energizer) x y =
-  translate x y $ dotColor $ circleSolid (gridSize / 4)
+drawItem s (Collectible Available Energizer) x y =
+  translate x y $ dotColor $ circleSolid (s / 4)
 -- Fruit
-drawItem (Collectible Available Fruit) x y =
-  translate x y $ color red $ circleSolid (gridSize / 2)
+drawItem s (Collectible Available Fruit) x y =
+  translate x y $ color red $ circleSolid (s / 2)
 
 -- Parse to int list to an grid
-buildGrid :: [[Int]] -> Grid
-buildGrid = map buildRow
+buildGrid :: [[Int]] -> Float -> Float -> Float -> Grid
+buildGrid gridItems x y s = Grid (map buildRow gridItems) x y s
  where
   buildRow :: [Int] -> [GridItem]
   buildRow []       = []
@@ -74,11 +71,14 @@ buildGrid = map buildRow
 
 -- Parse the grid to a list of pictures with coordinates for an offset
 -- ToDo: make this not so weird.
-showGrid :: Grid -> Float -> Float -> [Picture]
-showGrid []           _ _ = []
-showGrid (gis : grid) x y = showRow gis x (-y)
-  ++ showGrid grid x (y + gridSize)
- where
-  showRow :: [GridItem] -> Float -> Float -> [Picture]
-  showRow []        _  _  = []
-  showRow (g : gis) x1 y1 = drawItem g x1 y1 : showRow gis (x1 + gridSize) y1
+showGrid :: Grid -> [Picture]
+showGrid grid = foldl showRow [(translate x y blank)] gridItems
+  where
+    showRow :: [Picture] -> [GridItem] -> [Picture]
+    showRow ps@(Translate _ y2 _:_) gis = foldl showGridItem [(translate x (y2 + s) blank)] gis ++ ps
+    showGridItem :: [Picture] -> GridItem -> [Picture]
+    showGridItem ps@(Translate x2 y2 _:_) gi = drawItem s gi (x2 + s) y2 : ps
+    x         = getGridX grid
+    y         = getGridY grid
+    s         = getGridSize grid 
+    gridItems = getGridItems grid

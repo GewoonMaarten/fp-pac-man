@@ -12,7 +12,7 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-    Home     -> gameState { unScene = Play, unLevel = (buildGrid initGrid) }
+    Home     -> gameState { unScene = Play, unLevel = buildGrid initialGrid (-180) (-175) 20 }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
@@ -36,7 +36,7 @@ inputHandler _ gameState = gameState
 scene s fn gameState = if unScene gameState == s then fn gameState else gameState
 moveFn dirFn gameState = gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
-move level step pm@(PacMan [pn] p) = pm {
+move grid step pm@(PacMan [pn] p) = pm {
   unPath = [pn, npn],
   unDistance = ln pn npn
 }
@@ -49,5 +49,6 @@ move level step pm@(PacMan [pn] p) = pm {
     canPass (Collectible _ _) = True
     canPass _                 = False
     ln (Pn x1 y1) (Pn x2 y2) = fromIntegral $ abs $ (x2 - x1) + (y2 - y1)
+    level = getGridItems grid
 move _ _ pm = pm
 
