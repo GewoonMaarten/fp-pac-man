@@ -40,9 +40,9 @@ performPacManUpdate dt = move (dt * 4)
     where
         move _ pm@(PacMan [_] _) = pm
         move dt pm
-            | nd < 0    = move (-nd) $ next pm
+            | nd <= 0   = move (-nd) $ next pm
             | otherwise = pm { unDistance = nd }
             where nd = (unDistance pm) - dt
-        next (PacMan (a:b:cs) _) = PacMan (b:cs) $ dif (b:cs)
+        next (PacMan (_:npns) _) = PacMan npns $ dif npns
         dif [_] = 0
         dif ((Pn xa ya):(Pn xb yb):_) = fromIntegral $ abs $ (xb - xa) + (yb - ya)

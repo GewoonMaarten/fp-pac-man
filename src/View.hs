@@ -8,6 +8,7 @@ import           Graphics.Gloss.Data.Vector
 import           Graphics.Gloss.Data.Point.Arithmetic as Pt
 import           Controllers.Level
 import           Model
+import           PacMan
 
 drawView :: GameState -> Picture
 drawView gameState = draw (unScene gameState) gameState
@@ -21,17 +22,5 @@ draw Home     _         = textScale $ color white $ text "Home"
 draw Pause    _         = textScale $ color white $ text "Pause"
 draw gameOver _         = textScale $ color white $ text "Game Over"
 
-showPacMan pm = t pm $ color yellow $ circleSolid 10
-  where
-    t pm = translate x (-y) 
-      where (x, y) = ((-180, -175) Pt.+ 20 Pt.* (actual pm))
-
-actual (PacMan [p] _) = toVector p
-actual (PacMan (a:b:_) d) = vb Pt.+ (d Pt.* n)
-  where
-    vb = toVector b
-    delta = (toVector a) Pt.- vb
-    n = normalizeV delta
-
-toVector :: PathNode -> Vector
-toVector (Pn x y) = (fromIntegral x, fromIntegral y)
+showPacMan (PacMan pns d) = translate x (-y) $ color yellow $ circleSolid 10
+  where (x, y) = ((-180, -175) Pt.+ 20 Pt.* (actualLocation pns d))

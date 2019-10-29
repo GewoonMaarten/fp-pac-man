@@ -4,8 +4,10 @@ module Controllers.KeyController
 where
 
 import           Model
+import           PacMan
 import           Controllers.Level
 import           Graphics.Gloss.Interface.IO.Game
+import           Data.Fixed(mod')
 
 inputHandler :: Event -> GameState -> GameState
 -- Enter Key
@@ -36,19 +38,22 @@ inputHandler _ gameState = gameState
 scene s fn gameState = if unScene gameState == s then fn gameState else gameState
 moveFn dirFn gameState = gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
-move grid step pm@(PacMan [pn] p) = pm {
-  unPath = [pn, npn],
-  unDistance = ln pn npn
-}
+move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
+move grid step pm@(PacMan nds d) = if upN /= finalN then mutate else pm
   where
-    npn = nextPn pn
-    nextPn (Pn x y) = (uncurry Pn) $ next (x, y)
-    next p = if canPass $ get $ step p then next (step p) else p
+    mutate = pm {
+      unPath     = [head nds, n upN, n finalN],
+      unDistance = rd
+    }
+    upN      = upcomingNode nds d
+    finalN   = final upN
+    -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
+    rd       = d `mod'` 1
+    
+    n = uncurry Pn
+    final p = if canPass $ get $ step p then final (step p) else p
     get (x, y) = level !! y !! x
     canPass Empty             = True
     canPass (Collectible _ _) = True
     canPass _                 = False
-    ln (Pn x1 y1) (Pn x2 y2) = fromIntegral $ abs $ (x2 - x1) + (y2 - y1)
     level = getGridItems grid
-move _ _ pm = pm
-
