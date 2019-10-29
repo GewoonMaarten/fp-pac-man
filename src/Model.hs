@@ -7,6 +7,7 @@ data GameState = GameState {
 }
 
 data Scene = Play | Pause | Home | GameOver
+  deriving(Eq)
 
 type Grid = [[GridItem]]
 
