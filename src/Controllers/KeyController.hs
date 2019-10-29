@@ -40,16 +40,15 @@ scene s fn gameState = if unScene gameState == s then fn gameState else gameStat
 moveFn dirFn gameState = gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
-move grid step pm@(PacMan nds d) = if upN /= finalN then mutate else pm
+move grid step pm@(PacMan p) = if upN /= finalN then mutate else pm
   where
     mutate = pm {
-      unPath     = [head nds, n upN, n finalN],
-      unDistance = rd
+      unPath     = P [head $ unNodes p, n upN, n finalN] rd
     }
-    upN      = upcomingNode nds d
+    upN      = upcomingNode p
     finalN   = final upN
     -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
-    rd       = d `mod'` 1
+    rd       = unDistance p `mod'` 1
     
     n = uncurry Pn
     final p = if canPass $ get $ step p then final (step p) else p
