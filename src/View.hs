@@ -23,4 +23,4 @@ draw Pause    _         = textScale $ color white $ text "Pause"
 draw gameOver _         = textScale $ color white $ text "Game Over"
 
 showPacMan (PacMan pns d) = translate x (-y) $ color yellow $ circleSolid 10
-  where (x, y) = ((-180, -175) Pt.+ 20 Pt.* (actualLocation pns d))
+  where (x, y) = ((-180, -255) Pt.+ 20 Pt.* (actualLocation pns d))
