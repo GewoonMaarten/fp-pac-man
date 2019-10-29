@@ -28,6 +28,7 @@ data GridItem = Empty
   deriving (Show)
 
 data PathNode = Pn Int Int
+  deriving(Eq)
 type Path = [PathNode]
 type NodeDistance = Float
 

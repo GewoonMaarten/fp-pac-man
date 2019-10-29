@@ -39,36 +39,20 @@ scene s fn gameState = if unScene gameState == s then fn gameState else gameStat
 moveFn dirFn gameState = gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
-move level step pm@(PacMan [pn] _) = pm {
-  unPath = [pn, npn],
-  unDistance = ln pn npn
-}
+move level step pm@(PacMan nds d) = if upN /= finalN then mutate else pm
   where
-    npn = nextPn pn
-    nextPn (Pn x y) = (uncurry Pn) $ next (x, y)
-    next p = if canPass $ get $ step p then next (step p) else p
-    get (x, y) = level !! y !! x
-    canPass Empty             = True
-    canPass (Collectible _ _) = True
-    canPass _                 = False
-    ln (Pn x1 y1) (Pn x2 y2) = fromIntegral $ abs $ (x2 - x1) + (y2 - y1)
-move level step pm@(PacMan (a:b:_) d) = if canPass $ get (step upN) then go else pm
-  where 
-    go = pm {
-      unPath     = [a, (uncurry Pn) upN, (uncurry Pn) $ next (step upN)],
+    mutate = pm {
+      unPath     = [head nds, n upN, n finalN],
       unDistance = rd
     }
-    upN      = upcomingNode a b d
+    upN      = upcomingNode nds d
+    finalN   = final upN
+    -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
     rd       = d `mod'` 1
     
-    next p = if canPass $ get $ step p then next (step p) else p
+    n = uncurry Pn
+    final p = if canPass $ get $ step p then final (step p) else p
     get (x, y) = level !! y !! x
     canPass Empty             = True
     canPass (Collectible _ _) = True
     canPass _                 = False
--- find direction
--- Find immedient coords
--- [a]
--- can move to step? -> change direction
--- move to next node using direction
--- recursive n times
