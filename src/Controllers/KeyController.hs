@@ -23,13 +23,13 @@ inputHandler (EventKey (SpecialKey KeyEsc) _ _ _) gameState =
     Home     -> gameState
     GameOver -> gameState
 -- Left Key
-inputHandler (EventKey (SpecialKey KeyLeft) _ _ _) gameState = (scene Play $ moveFn (\(x, y) -> (x - 1, y))) gameState
+inputHandler (EventKey (SpecialKey KeyLeft) _ _ _) gameState = scene Play (moveFn (\(x, y) -> (x - 1, y))) gameState
 -- Right Key
-inputHandler (EventKey (SpecialKey KeyRight) _ _ _) gameState = (scene Play $ moveFn (\(x, y) -> (x + 1, y))) gameState
+inputHandler (EventKey (SpecialKey KeyRight) _ _ _) gameState = scene Play (moveFn (\(x, y) -> (x + 1, y))) gameState
 -- Up Key
-inputHandler (EventKey (SpecialKey KeyUp) _ _ _) gameState = (scene Play $ moveFn (\(x, y) -> (x, y - 1))) gameState
+inputHandler (EventKey (SpecialKey KeyUp) _ _ _) gameState = scene Play (moveFn (\(x, y) -> (x, y - 1))) gameState
 -- Down Key
-inputHandler (EventKey (SpecialKey KeyDown) _ _ _) gameState = (scene Play $ moveFn (\(x, y) -> (x, y + 1))) gameState
+inputHandler (EventKey (SpecialKey KeyDown) _ _ _) gameState = scene Play (moveFn (\(x, y) -> (x, y + 1))) gameState
 
 inputHandler _ gameState = gameState
 
