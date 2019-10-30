@@ -21,8 +21,11 @@ executable pac-man
   other-modules:       Controllers.KeyController
                        Controllers.Level
                        Model
-                       PacMan
+                       Models.PacMan
+                       Models.Ghost
                        View
+                       Collider
+                       Utils.Path
   -- other-extensions:
   build-depends:       base >= 4 && < 5,
                        gloss,

@@ -5,7 +5,7 @@ import           Models.PacMan
 import           Models.Ghost
 import           View
 import           Controllers.KeyController
-
+import           Collider
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 
@@ -19,7 +19,15 @@ main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
               update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
-intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [initialGhost Blinky, initialGhost Inky, initialGhost Pinky, initialGhost Clyde]
+intialGameState = GameState
+    Home
+    (Grid [] 0 0 0)
+    initialPacMan
+    [ initialGhost Blinky
+    , initialGhost Inky
+    , initialGhost Pinky
+    , initialGhost Clyde
+    ]
 
 draw :: GameState -> IO Picture
 draw = return . drawView
@@ -31,7 +39,8 @@ update :: Float -> GameState -> IO GameState
 update dt = return . performUpdate dt
 
 performUpdate :: Float -> GameState -> GameState
-performUpdate dt gs = gs { 
-    unPacMan = performPacManUpdate dt (unPacMan gs),
-    unGhosts = map (performGhostUpdate gs dt) (unGhosts gs)
-}
+performUpdate dt gs = collectItems $ gs
+    { unPacMan = performPacManUpdate dt (unPacMan gs)
+    , unGhosts = map (performGhostUpdate gs dt) (unGhosts gs)
+    }
+
