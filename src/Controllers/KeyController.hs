@@ -14,7 +14,7 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-    Home -> gameState { unScene = Play, unLevel = buildGrid (-200) (-245) 20 }
+    Home -> gameState { unScene = Play, unLevel = buildGrid (-180) (175) 20 }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
@@ -56,7 +56,7 @@ move grid step pm@(PacMan nds d) = if upN /= finalN then mutate else pm
   n      = uncurry Pn
   final p = if canPass $ get $ step p then final (step p) else p
   get (x, y) = level !! y !! x
-  canPass Empty             = True
-  canPass (Collectible _ _) = True
-  canPass _                 = False
+  canPass (Empty _ _        ) = True
+  canPass (Collectible _ _ _) = True
+  canPass _                   = False
   level = getGridItems grid

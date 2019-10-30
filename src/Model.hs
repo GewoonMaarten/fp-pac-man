@@ -16,20 +16,24 @@ data Grid = Grid {
   getGridSize :: Float
 }
 
-data CollectibleType = PacDot
-                     | Energizer
-                     | Fruit
+type Position = (Float, Float)
+type Radius = Float
+type BoxSize = (Float, Float)
+
+data CollectibleType = PacDot BoxSize
+                     | Energizer Radius
+                     | Fruit Radius
   deriving (Show)
 
 data CollectibleState = Collected
                       | Available
   deriving (Show)
 
-data GridItem = Empty
-              | Door
-              | Wall
-              | SpawnPoint
-              | Collectible CollectibleState CollectibleType
+data GridItem = Empty BoxSize Position
+              | Door BoxSize Position
+              | Wall BoxSize Position
+              | SpawnPoint BoxSize Position
+              | Collectible Position CollectibleState CollectibleType
   deriving (Show)
 
 data PathNode = Pn Int Int
