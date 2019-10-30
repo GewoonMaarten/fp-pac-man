@@ -15,7 +15,11 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
+<<<<<<< HEAD
     Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 255 20 }
+=======
+    Home -> gameState { unScene = Play, unLevel = buildGrid (-200) (-245) 20 }
+>>>>>>> parent of 5f505bc... GridItem dimensions are now stored in the GridItem it self
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
@@ -57,7 +61,7 @@ move grid step pm@(PacMan p) = if upN /= finalN then mutate else pm
   n      = uncurry Pn
   final p = if canPass $ get $ step p then final (step p) else p
   get (x, y) = level !! y !! x
-  canPass (Empty _ _        ) = True
-  canPass (Collectible _ _ _) = True
-  canPass _                   = False
+  canPass Empty             = True
+  canPass (Collectible _ _) = True
+  canPass _                 = False
   level = getGridItems grid
