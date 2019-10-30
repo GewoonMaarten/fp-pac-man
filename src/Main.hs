@@ -21,6 +21,7 @@ main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
 
 intialGameState :: GameState
 intialGameState = GameState
+    0
     Home
     (Grid [] 0 0 0)
     initialPacMan
@@ -42,7 +43,24 @@ update :: Float -> GameState -> IO GameState
 update dt = return . performUpdate dt
 
 performUpdate :: Float -> GameState -> GameState
-performUpdate dt gs = collectItems $ gs
+performUpdate dt gs = updateAnimation dt $ collectItems $ gs
     { unPacMan = performPacManUpdate dt (unPacMan gs)
     , unGhosts = map (performGhostUpdate gs dt) (unGhosts gs)
     }
+
+-- number of seconds to wait to update the animation    
+animationUpdateTime = 0.1
+
+updateAnimation :: Float -> GameState -> GameState
+updateAnimation secs gs@(GameState _ Play _ p@(PacMan _ _ (Just (Movement dir stage))) _)
+    | elapsedTime gs + secs > animationUpdateTime
+    = gs { elapsedTime = 0
+         , unPacMan = p { unMovement = (Just (Movement dir (nextStage stage))) }
+         }
+    | otherwise
+    = gs { elapsedTime = elapsedTime gs + secs }
+  where
+    nextStage :: AnimStage -> AnimStage
+    nextStage s | (fromEnum s) + 1 > fromEnum (maxBound :: AnimStage) = toEnum 0
+                | otherwise = succ s
+updateAnimation secs gs = gs { elapsedTime = elapsedTime gs + secs }

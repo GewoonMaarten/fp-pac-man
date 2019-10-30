@@ -1,9 +1,10 @@
 module Model where
 
-import Models.PacMan
-import Models.Ghost
+import           Models.PacMan
+import           Models.Ghost
 
 data GameState = GameState {
+    elapsedTime :: Float,
     unScene :: Scene,
     unLevel :: Grid,
     unPacMan :: PacMan,

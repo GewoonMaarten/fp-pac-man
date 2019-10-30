@@ -31,7 +31,7 @@ drawPlay gameState (Textures _ _ gt gat pt pdt) =
   pictures
     $  (showGrid $ unLevel gameState)
     ++ [ drawGhost g (ghostPos g) gt | g <- unGhosts gameState ]
-    ++ [showPacMan $ unPacMan gameState]
+    ++ [showPacMan pt $ unPacMan gameState]
     ++ [showScore $ unPacMan gameState]
 
 

@@ -2,7 +2,7 @@ module Graphics where
 
 import           Graphics.Gloss
 import           Models.Ghost
-data TextureSet = PacManTextureSet Picture Picture Picture Picture Picture
+data TextureSet = PacManTextureSet Picture Picture Picture Picture
   | DeathTextureSet Picture Picture Picture
   | GhostTextureSet Picture Picture
 
@@ -23,7 +23,6 @@ loadTextures = do
     <*> loadBMP "assets/pac_man_1.bmp"
     <*> loadBMP "assets/pac_man_2.bmp"
     <*> loadBMP "assets/pac_man_3.bmp"
-    <*> loadBMP "assets/pac_man_4.bmp"
   deathTextures <-
     DeathTextureSet
     <$> loadBMP "assets/spr_pacdeath_0.bmp"
