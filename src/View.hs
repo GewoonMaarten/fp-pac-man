@@ -22,6 +22,7 @@ draw Play     gameState = pictures
   $  (showGrid $ unLevel gameState)
   ++ [showGhost g | g <- unGhosts gameState]
   ++ [showPacMan $ unPacMan gameState]
+  ++ [showScore $ unPacMan gameState]
 draw Home     _         = textScale $ color white $ text "Home"
 draw Pause    _         = textScale $ color white $ text "Pause"
 draw gameOver _         = textScale $ color white $ text "Game Over"

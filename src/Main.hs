@@ -8,7 +8,7 @@ import           Controllers.KeyController
 import           Collider
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
-
+import Debug.Trace
 main :: IO ()
 main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
               black -- Background Color
@@ -43,4 +43,3 @@ performUpdate dt gs = collectItems $ gs
     { unPacMan = performPacManUpdate dt (unPacMan gs)
     , unGhosts = map (performGhostUpdate gs dt) (unGhosts gs)
     }
-

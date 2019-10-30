@@ -19,13 +19,13 @@ drawItem s Door x y =
 -- SpawnPoint
 drawItem s SpawnPoint x y = translate x y $ color black $ rectangleSolid s s
 -- Pac-Dot
-drawItem s (Collectible Available PacDot) x y =
+drawItem s (Collectible Available PacDot _) x y =
   translate x y $ dotColor $ rectangleSolid (s / 4) (s / 4)
 -- Energizer
-drawItem s (Collectible Available Energizer) x y =
+drawItem s (Collectible Available Energizer _) x y =
   translate x y $ dotColor $ circleSolid (s / 4)
 -- Fruit
-drawItem s (Collectible Available Fruit) x y =
+drawItem s (Collectible Available Fruit _) x y =
   translate x y $ color red $ circleSolid (s / 2)
 -- Nothing
 drawItem s _ x y = translate x y $ color black $ rectangleSolid s s
@@ -39,8 +39,8 @@ buildGrid = Grid (map buildRow initialGrid)
   buildRow (1 : xs) = Wall : buildRow xs
   buildRow (2 : xs) = SpawnPoint : buildRow xs
   buildRow (3 : xs) = Door : buildRow xs
-  buildRow (4 : xs) = Collectible Available PacDot : buildRow xs
-  buildRow (5 : xs) = Collectible Available Energizer : buildRow xs
+  buildRow (4 : xs) = Collectible Available PacDot 10 : buildRow xs
+  buildRow (5 : xs) = Collectible Available Energizer 50 : buildRow xs
   buildRow (_ : xs) = Empty : buildRow xs
   initialGrid :: [[Int]]
   initialGrid =

@@ -5,12 +5,12 @@ import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic as Pt
 
 data PathNode = Pn Int Int
-  deriving(Eq)
+  deriving(Eq, Show)
 type NodeDistance = Float
 data Path = P {
   unNodes :: [PathNode],
   unDistance :: NodeDistance
-}
+} deriving (Show)
 
 upcomingNode :: Path -> (Int, Int) 
 upcomingNode (P pns d) = (round x, round y)

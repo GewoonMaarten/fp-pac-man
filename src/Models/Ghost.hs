@@ -5,12 +5,12 @@ import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic as Pt
 import           Utils.Path
 
-data GhostType = Blinky | Inky | Pinky | Clyde
+data GhostType = Blinky | Inky | Pinky | Clyde deriving (Show)
 
 data Ghost = Ghost {
     unPath :: Path,
     unType :: GhostType
-}
+} deriving (Show)
 
 initialGhost Blinky = Ghost (P [Pn  6  7, Pn 12  7] 6) Blinky
 initialGhost Inky   = Ghost (P [Pn  6 11, Pn  6  7] 4) Inky

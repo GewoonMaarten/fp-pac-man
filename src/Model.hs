@@ -8,17 +8,18 @@ data GameState = GameState {
     unLevel :: Grid,
     unPacMan :: PacMan,
     unGhosts :: [Ghost]
-}
+} deriving (Show)
 
 data Scene = Play | Pause | Home | GameOver
-  deriving(Eq)
+  deriving(Eq, Show)
 
 data Grid = Grid {
   getGridItems :: [[GridItem]],
   getGridX :: Float,
   getGridY :: Float,
   getGridSize :: Float
-}
+} deriving (Show)
+
 
 data CollectibleType = PacDot
                      | Energizer
@@ -29,9 +30,11 @@ data CollectibleState = Collected
                       | Available
   deriving (Show)
 
+type CollectibleScore = Int
+
 data GridItem = Empty
               | Door
               | Wall
               | SpawnPoint
-              | Collectible CollectibleState CollectibleType
+              | Collectible CollectibleState CollectibleType CollectibleScore
   deriving (Show)
