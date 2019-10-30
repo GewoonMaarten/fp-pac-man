@@ -1,9 +1,13 @@
 module Model where
 
+import Models.PacMan
+import Models.Ghost
+
 data GameState = GameState {
     unScene :: Scene,
     unLevel :: Grid,
-    unPacMan :: PacMan
+    unPacMan :: PacMan,
+    unGhosts :: [Ghost]
 }
 
 data Scene = Play | Pause | Home | GameOver
@@ -35,13 +39,3 @@ data GridItem = Empty BoxSize Position
               | SpawnPoint BoxSize Position
               | Collectible Position CollectibleState CollectibleType
   deriving (Show)
-
-data PathNode = Pn Int Int
-  deriving(Eq)
-type Path = [PathNode]
-type NodeDistance = Float
-
-data PacMan = PacMan {
-    unPath :: Path,
-    unDistance :: NodeDistance
-}

@@ -4,7 +4,8 @@ module Controllers.KeyController
 where
 
 import           Model
-import           PacMan
+import           Models.PacMan
+import           Utils.Path
 import           Controllers.Level
 import           Graphics.Gloss.Interface.IO.Game
 import           Data.Fixed                     ( mod' )
@@ -14,7 +15,7 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-    Home -> gameState { unScene = Play, unLevel = buildGrid (-180) (175) 20 }
+    Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 175 20 }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
@@ -45,13 +46,13 @@ moveFn dirFn gameState =
   gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
-move grid step pm@(PacMan nds d) = if upN /= finalN then mutate else pm
+move grid step pm@(PacMan p) = if upN /= finalN then mutate else pm
  where
-  mutate = pm { unPath = [head nds, n upN, n finalN], unDistance = rd }
-  upN    = upcomingNode nds d
+  mutate = pm { unPath = P [head $ unNodes p, n upN, n finalN] rd }
+  upN    = upcomingNode p
   finalN = final upN
   -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
-  rd     = d `mod'` 1
+  rd     = unDistance p `mod'` 1
 
   n      = uncurry Pn
   final p = if canPass $ get $ step p then final (step p) else p
