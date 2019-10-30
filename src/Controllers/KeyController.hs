@@ -15,11 +15,7 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-<<<<<<< HEAD
-    Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 255 20 }
-=======
-    Home -> gameState { unScene = Play, unLevel = buildGrid (-200) (-245) 20 }
->>>>>>> parent of 5f505bc... GridItem dimensions are now stored in the GridItem it self
+    Home -> gameState { unScene = Play, unLevel = buildGrid (-200) (-165) 20 }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key

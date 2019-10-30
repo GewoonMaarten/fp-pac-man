@@ -21,5 +21,5 @@ collectItems gs =
   in  gs { unLevel = grid { getGridItems = giss } }
  where
   pickup :: GridItem -> GridItem
-  pickup (Collectible p Available t) = (Collectible p Collected t)
-  pickup g                           = g
+  pickup (Collectible Available t) = (Collectible Collected t)
+  pickup g                         = g
