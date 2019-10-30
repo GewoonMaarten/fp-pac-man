@@ -69,14 +69,17 @@ buildGrid = Grid (map buildRow initialGrid)
 
 -- Parse the grid to a list of pictures with coordinates for an offset
 showGrid :: Grid -> [Picture]
-showGrid grid = foldr showRow [(translate x y blank)] gridItems
+showGrid g =
+  let x         = getGridX g
+      y         = getGridY g
+      s         = getGridSize g
+      gridItems = getGridItems g
+  in  showGrid' gridItems x y s
  where
-  showRow :: [GridItem] -> [Picture] -> [Picture]
-  showRow gis ps@(Translate _ y2 _ : _) =
-    foldr showGridItem [(translate x (y2 + s) blank)] gis ++ ps
-  showGridItem :: GridItem -> [Picture] -> [Picture]
-  showGridItem gi ps@(Translate x2 y2 _ : _) = drawItem s gi (x2 + s) y2 : ps
-  x         = getGridX grid
-  y         = getGridY grid
-  s         = getGridSize grid
-  gridItems = getGridItems grid
+  showGrid' :: [[GridItem]] -> Float -> Float -> Float -> [Picture]
+  showGrid' [] _ _ _ = []
+  showGrid' (gis : giss) x y s =
+    showRow gis x y s ++ showGrid' giss x (y - s) s
+  showRow :: [GridItem] -> Float -> Float -> Float -> [Picture]
+  showRow []        _  _  _ = []
+  showRow (g : gis) x1 y1 s = drawItem s g x1 y1 : showRow gis (x1 + s) y1 s
