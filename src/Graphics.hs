@@ -26,9 +26,9 @@ loadTextures = do
     <*> loadBMP "assets/pac_man_4.bmp"
   deathTextures <-
     DeathTextureSet
-    <$> loadBMP "assets/pacdeath_0.bmp"
-    <*> loadBMP "assets/pacdeath_1.bmp"
-    <*> loadBMP "assets/pacdeath_2.bmp"
+    <$> loadBMP "assets/spr_pacdeath_0.bmp"
+    <*> loadBMP "assets/spr_pacdeath_1.bmp"
+    <*> loadBMP "assets/spr_pacdeath_2.bmp"
   blinkyTextures <-
     GhostTextureSet <$> loadBMP "assets/spr_ghost_red_0.bmp" <*> loadBMP
       "assets/spr_ghost_red_1.bmp"

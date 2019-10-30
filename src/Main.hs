@@ -8,7 +8,8 @@ import           Controllers.KeyController
 import           Collider
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
-import Debug.Trace
+import           Graphics
+
 main :: IO ()
 main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
               black -- Background Color
@@ -23,14 +24,16 @@ intialGameState = GameState
     Home
     (Grid [] 0 0 0)
     initialPacMan
-    [ initialGhost Blinky
-    , initialGhost Inky
-    , initialGhost Pinky
-    , initialGhost Clyde
+    [ initialGhost Blinky False
+    , initialGhost Inky   False
+    , initialGhost Pinky  False
+    , initialGhost Clyde  False
     ]
 
 draw :: GameState -> IO Picture
-draw = return . drawView
+draw gs = do
+    ts <- loadTextures
+    return (drawView gs ts)
 
 input :: Event -> GameState -> IO GameState
 input event gameState = return (inputHandler event gameState)
