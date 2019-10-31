@@ -11,7 +11,8 @@ data Textures = Textures {
   texturesGhost :: [(Int, TextureSet)],
   texturesGhostAfraid :: TextureSet,
   texturesPacMan :: TextureSet,
-  texturesPacManDeath :: TextureSet
+  texturesPacManDeath :: TextureSet,
+  textureBanner :: Picture
 }
 
 loadTextures :: IO Textures
@@ -44,6 +45,7 @@ loadTextures = do
       "assets/spr_afraid_1.bmp"
   liveCounter   <- loadBMP "assets/spr_lifecounter_0.bmp"
   cherryTexture <- loadBMP "assets/spr_cherry_0.bmp"
+  bannerTexture <- loadBMP "assets/spr_banner_0.bmp"
   return Textures
     { textureLiveCounter  = liveCounter
     , textureCherry       = cherryTexture
@@ -55,4 +57,5 @@ loadTextures = do
     , texturesGhostAfraid = afraidTextures
     , texturesPacMan      = pacManTextures
     , texturesPacManDeath = deathTextures
+    , textureBanner       = bannerTexture
     }
