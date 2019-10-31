@@ -10,6 +10,7 @@ import           Graphics
 data PacMan = PacMan {
     unPath :: Path,
     unScore :: Int,
+    unLives :: Int,
     unMovement :: Maybe Movement
 } deriving (Show)
 
@@ -24,14 +25,20 @@ data AnimStage = One | Two | Three | Four
   deriving (Show, Eq, Enum, Bounded)
 
 initialPacMan :: PacMan
-initialPacMan = PacMan (P [Pn 9 7] 1) 0 (Just (Movement MoveLeft Three))
+initialPacMan = PacMan 
+  (P [Pn 9 7] 1) -- Path
+  0 -- Score
+  3 -- Lifes
+  (Just (Movement MoveLeft Three)) -- Movement
 
 performPacManUpdate :: Float -> PacMan -> PacMan
 performPacManUpdate dt pm = pm { unPath = movePath (dt * 4) (unPath pm) }
 
 showPacMan :: TextureSet -> PacMan -> Picture
-showPacMan ts pm@(PacMan _ _ (Just (Movement dir stage))) = let (x, y) = getLoc pm in 
-  translate x (-y) $ pacmManRotate dir $ pacManScale $ getTexture ts stage
+showPacMan ts pm@(PacMan _ _ _ movement) = let (x, y) = getLoc pm in 
+    translate x (-y) $ case movement of
+      Just (Movement dir stage) -> pacmManRotate dir $ pacManScale $ getTexture ts stage
+      Nothing                   -> pacManScale $ getTexture ts Three
   where
     getTexture :: TextureSet -> AnimStage -> Picture
     getTexture ( PacManTextureSet p _ _ _ ) One   = p
@@ -49,5 +56,14 @@ showPacMan ts pm@(PacMan _ _ (Just (Movement dir stage))) = let (x, y) = getLoc 
     pacmManRotate MoveRight = rotate 0
 
 showScore :: PacMan -> Picture
-showScore (PacMan _ s _) =
-  translate 100 300 $ scale 0.2 0.2 $ color white $ text $ show s
+showScore =
+  translate 100 300 . scale 0.2 0.2 . color white . text . show . unScore
+
+showLives :: Textures -> PacMan -> Picture
+showLives t p = let x = (-200)
+                    y = (-180) in
+    pictures $ foldr translateTexture [translate x y blank] (lifeTextures t p)
+  where
+    lifeTextures :: Textures -> PacMan -> [Picture]
+    lifeTextures ts pm = replicate (unLives pm) (scale 1.5 1.5 $ textureLifeCounter ts)
+    translateTexture p ps@(Translate x1 y1 _:_) = translate (x1 + 30) y1 p : ps

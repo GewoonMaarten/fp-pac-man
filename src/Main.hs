@@ -32,9 +32,7 @@ intialGameState = GameState
     ]
 
 draw :: GameState -> IO Picture
-draw gs = do
-    ts <- loadTextures
-    return (drawView gs ts)
+draw gs = drawView gs <$> loadTextures
 
 input :: Event -> GameState -> IO GameState
 input event gameState = return (inputHandler event gameState)
@@ -52,15 +50,15 @@ performUpdate dt gs = updateAnimation dt $ collectItems $ gs
 animationUpdateTime = 0.1
 
 updateAnimation :: Float -> GameState -> GameState
-updateAnimation secs gs@(GameState _ Play _ p@(PacMan _ _ (Just (Movement dir stage))) _)
+updateAnimation secs gs@(GameState _ Play _ p@(PacMan _ _ _ (Just (Movement dir stage))) _)
     | elapsedTime gs + secs > animationUpdateTime
     = gs { elapsedTime = 0
-         , unPacMan = p { unMovement = (Just (Movement dir (nextStage stage))) }
+         , unPacMan = p{unMovement = Just (Movement dir (nextStage stage))}
          }
     | otherwise
     = gs { elapsedTime = elapsedTime gs + secs }
   where
     nextStage :: AnimStage -> AnimStage
-    nextStage s | (fromEnum s) + 1 > fromEnum (maxBound :: AnimStage) = toEnum 0
+    nextStage s | fromEnum s + 1 > fromEnum (maxBound :: AnimStage) = toEnum 0
                 | otherwise = succ s
 updateAnimation secs gs = gs { elapsedTime = elapsedTime gs + secs }

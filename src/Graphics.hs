@@ -6,7 +6,7 @@ data TextureSet = PacManTextureSet Picture Picture Picture Picture
   | GhostTextureSet Picture Picture
 
 data Textures = Textures {
-  textureLiveCounter :: Picture,
+  textureLifeCounter :: Picture,
   textureCherry :: Picture,
   texturesGhost :: [(Int, TextureSet)],
   texturesGhostAfraid :: TextureSet,
@@ -43,11 +43,11 @@ loadTextures = do
   afraidTextures <-
     GhostTextureSet <$> loadBMP "assets/spr_afraid_0.bmp" <*> loadBMP
       "assets/spr_afraid_1.bmp"
-  liveCounter   <- loadBMP "assets/spr_lifecounter_0.bmp"
+  lifeCounter   <- loadBMP "assets/spr_lifecounter_0.bmp"
   cherryTexture <- loadBMP "assets/spr_cherry_0.bmp"
   bannerTexture <- loadBMP "assets/spr_banner_0.bmp"
   return Textures
-    { textureLiveCounter  = liveCounter
+    { textureLifeCounter  = lifeCounter
     , textureCherry       = cherryTexture
     , texturesGhost       = [ (0, blinkyTextures)
                             , (1, inkyTextures)

@@ -14,7 +14,7 @@ import           Models.Level
 import           Graphics
 
 drawView :: GameState -> Textures -> Picture
-drawView gameState t = draw (unScene gameState) gameState t
+drawView gameState = draw (unScene gameState) gameState
 
 textScale :: Picture -> Picture
 textScale = let s = 0.25 in scale s s
@@ -27,13 +27,13 @@ draw gameOver _         _ = textScale $ color white $ text "Game Over"
 
 
 drawPlay :: GameState -> Textures -> Picture
-drawPlay gameState (Textures _ _ gt gat pt pdt _) =
+drawPlay gameState ts@(Textures _ _ gt gat pt pdt _) =
   pictures
     $  (showGrid $ unLevel gameState)
     ++ [ drawGhost g gt | g <- unGhosts gameState ]
     ++ [ showPacMan pt $ unPacMan gameState ]
     ++ [ showScore $ unPacMan gameState ]
-
+    ++ [ showLives ts $ unPacMan gameState ]
 
 drawHome :: Textures -> Picture
 drawHome ts = pictures [banner, menuText, startText, quitText]

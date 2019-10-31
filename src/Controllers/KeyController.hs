@@ -46,7 +46,7 @@ moveFn dirFn gameState =
   gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
-move grid step pm@(PacMan p _ _) = if upN /= finalN then mutate else pm
+move grid step pm@(PacMan p _ _ _) = if upN /= finalN then mutate else pm
  where
   mutate = pm { unPath = P [head $ unNodes p, n upN, n finalN] rd }
   upN    = upcomingNode p
@@ -58,6 +58,6 @@ move grid step pm@(PacMan p _ _) = if upN /= finalN then mutate else pm
   final p = if canPass $ get $ step p then final (step p) else p
   get (x, y) = level !! y !! x
   canPass Empty               = True
-  canPass (Collectible _ _ _) = True
+  canPass Collectible{}       = True
   canPass _                   = False
   level = getGridItems grid

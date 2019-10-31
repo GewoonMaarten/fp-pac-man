@@ -26,7 +26,7 @@ performGhostUpdate gs dt g =
 
 drawGhost :: Ghost -> [(Int, TextureSet)] -> Picture
 drawGhost _ [] = blank
-drawGhost g@(Ghost p gt False) (t : ts) | fromEnum gt == fst t = translate x (-y) $ scale s s $ p1
+drawGhost g@(Ghost p gt False) (t : ts) | fromEnum gt == fst t = translate x (-y) $ scale s s p1
                                         | otherwise = drawGhost g ts
   where
     (GhostTextureSet p1 _) = snd t
