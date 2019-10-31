@@ -6,7 +6,7 @@ where
 import           Model
 import           Models.PacMan
 import           Utils.Path
-import           Controllers.Level
+import           Models.Level
 import           Graphics.Gloss.Interface.IO.Game
 import           Data.Fixed                     ( mod' )
 

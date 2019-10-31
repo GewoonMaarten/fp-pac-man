@@ -1,7 +1,6 @@
 module Graphics where
 
 import           Graphics.Gloss
-import           Models.Ghost
 data TextureSet = PacManTextureSet Picture Picture Picture Picture
   | DeathTextureSet Picture Picture Picture
   | GhostTextureSet Picture Picture
@@ -9,7 +8,7 @@ data TextureSet = PacManTextureSet Picture Picture Picture Picture
 data Textures = Textures {
   textureLiveCounter :: Picture,
   textureCherry :: Picture,
-  texturesGhost :: [(GhostType, TextureSet)],
+  texturesGhost :: [(Int, TextureSet)],
   texturesGhostAfraid :: TextureSet,
   texturesPacMan :: TextureSet,
   texturesPacManDeath :: TextureSet
@@ -48,10 +47,10 @@ loadTextures = do
   return Textures
     { textureLiveCounter  = liveCounter
     , textureCherry       = cherryTexture
-    , texturesGhost       = [ (Blinky, blinkyTextures)
-                            , (Inky  , inkyTextures)
-                            , (Pinky , pinkyTextures)
-                            , (Clyde , clydeTextures)
+    , texturesGhost       = [ (0, blinkyTextures)
+                            , (1, inkyTextures)
+                            , (2, pinkyTextures)
+                            , (3, clydeTextures)
                             ]
     , texturesGhostAfraid = afraidTextures
     , texturesPacMan      = pacManTextures

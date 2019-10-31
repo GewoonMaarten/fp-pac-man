@@ -5,8 +5,9 @@ import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic
                                                as Pt
 import           Utils.Path
+import           Graphics
 
-data GhostType = Blinky | Inky | Pinky | Clyde deriving (Eq, Show)
+data GhostType = Blinky | Inky | Pinky | Clyde deriving (Eq, Show, Enum)
 type IsAfraid = Bool
 
 data Ghost = Ghost {
@@ -23,5 +24,11 @@ initialGhost Clyde  = Ghost (P [Pn 12 11, Pn 6 11] 6) Clyde
 performGhostUpdate gs dt g =
   g { unPath = movePath' (ghostFn gs) (dt * 4) (unPath g) }
 
-
-ghostPos (Ghost p _ _) = ((-180, -255) Pt.+ 20 Pt.* (actualLocation p))
+drawGhost :: Ghost -> [(Int, TextureSet)] -> Picture
+drawGhost _ [] = blank
+drawGhost g@(Ghost p gt False) (t : ts) | fromEnum gt == fst t = translate x (-y) $ scale s s $ p1
+                                        | otherwise = drawGhost g ts
+  where
+    (GhostTextureSet p1 _) = snd t
+    s                      = 0.6
+    (x,y) =  ((-180, -255) Pt.+ 20 Pt.* (actualLocation p))

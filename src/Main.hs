@@ -5,7 +5,7 @@ import           Models.PacMan
 import           Models.Ghost
 import           View
 import           Controllers.KeyController
-import           Collider
+import           Utils.Collider
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 import           Graphics

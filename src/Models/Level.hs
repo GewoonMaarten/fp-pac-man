@@ -1,4 +1,4 @@
-module Controllers.Level where
+module Models.Level where
 
 import           Graphics.Gloss
 import           Model

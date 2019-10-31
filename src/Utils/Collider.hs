@@ -1,4 +1,4 @@
-module Collider
+module Utils.Collider
   ( collectItems
   )
 where

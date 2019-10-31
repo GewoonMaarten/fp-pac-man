@@ -7,10 +7,10 @@ import           Graphics.Gloss
 import           Graphics.Gloss.Data.Vector
 import           Graphics.Gloss.Data.Point.Arithmetic
                                                as Pt
-import           Controllers.Level
 import           Model
 import           Models.PacMan
 import           Models.Ghost
+import           Models.Level
 import           Graphics
 
 drawView :: GameState -> Textures -> Picture
@@ -30,17 +30,6 @@ drawPlay :: GameState -> Textures -> Picture
 drawPlay gameState (Textures _ _ gt gat pt pdt) =
   pictures
     $  (showGrid $ unLevel gameState)
-    ++ [ drawGhost g (ghostPos g) gt | g <- unGhosts gameState ]
-    ++ [showPacMan pt $ unPacMan gameState]
-    ++ [showScore $ unPacMan gameState]
-
-
-drawGhost :: Ghost -> (Float, Float) -> [(GhostType, TextureSet)] -> Picture
-drawGhost _ _ [] = blank
-drawGhost g@(Ghost _ gt False) (x, y) (t : ts)
-  | gt == fst t
-  = let (GhostTextureSet p1 _) = snd t
-        s                      = 0.6
-    in  translate x (-y) $ scale s s $ p1
-  | otherwise
-  = drawGhost g (x, y) ts
+    ++ [ drawGhost g gt | g <- unGhosts gameState ]
+    ++ [ showPacMan pt $ unPacMan gameState ]
+    ++ [ showScore $ unPacMan gameState ]
