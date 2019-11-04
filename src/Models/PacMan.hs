@@ -32,7 +32,19 @@ initialPacMan = PacMan
   (Just (Movement MoveLeft Three)) -- Movement
 
 performPacManUpdate :: Float -> PacMan -> PacMan
-performPacManUpdate dt pm = pm { unPath = movePath (dt * 4) (unPath pm) }
+performPacManUpdate dt pm = pm { unPath = path, unMovement = mv (unMovement pm) }
+  where
+    path = movePath (dt * 4) (unPath pm)
+    mv (Just movement) = Just $ movement { unDirection = upd path $ unDirection movement } 
+    mv Nothing         = Nothing
+    upd (P [_] _)     d = d
+    upd (P (a:b:_) _) d = dir d a b
+    dir d (Pn x1 y1) (Pn x2 y2)
+      | x1 < x2 = MoveRight
+      | x1 > x2 = MoveLeft
+      | y1 < y2 = MoveDown
+      | y1 > y2 = MoveUp
+      | otherwise = d
 
 showPacMan :: TextureSet -> PacMan -> Picture
 showPacMan ts pm@(PacMan _ _ _ movement) = let (x, y) = getLoc pm in 
