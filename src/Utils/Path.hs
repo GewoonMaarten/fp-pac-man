@@ -46,9 +46,6 @@ movePath' nfn dt p
 -- just move to the next node
 nextFn (P (_:npns) _) = P npns $ newDistance npns
 
--- implement ghost choice using GameState at this level
-ghostFn gs p@(P (a:b:_) _) = P [b, a] $ newDistance [b, a]
-
 newDistance [_] = 0
 newDistance (a:b:_)
     | outside a && outside b = 0

@@ -21,8 +21,8 @@ initialGhost Inky   = Ghost (P [Pn 6 11, Pn 6 7] 4) Inky
 initialGhost Pinky  = Ghost (P [Pn 12 7, Pn 12 11] 4) Pinky
 initialGhost Clyde  = Ghost (P [Pn 12 11, Pn 6 11] 6) Clyde
 
-performGhostUpdate gs dt g =
-  g { unPath = movePath' (ghostFn gs) (dt * 4) (unPath g) }
+performGhostUpdate ghostFn dt g =
+  g { unPath = movePath' ghostFn (dt * 4) (unPath g) }
 
 drawGhost :: Ghost -> [(Int, TextureSet)] -> Picture
 drawGhost _ [] = blank

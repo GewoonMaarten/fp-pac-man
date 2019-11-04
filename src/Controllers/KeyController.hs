@@ -48,13 +48,13 @@ moveFn dirFn gameState =
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
 move grid step pm@(PacMan p _ _ _) = if upN /= head followed then mutate else pm
  where
-  mutate = pm { unPath = P np rd }
+  mutate = pm { unPath = P newPath newDistance }
   -- combine current origin (head) with new followed path
-  np     = (head $ unNodes p) : (map (uncurry Pn) (upN : followed))
-  upN    = upcomingNode p
+  newPath = (head $ unNodes p) : (map (uncurry Pn) (upN : followed))
+  upN = upcomingNode p
   followed = follow upN
   -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
-  rd     = unDistance p `mod'` 1
+  newDistance = unDistance p `mod'` 1
 
   follow p = f (wrap $ step p) (canPass $ get $ step p) 
     where
