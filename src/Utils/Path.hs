@@ -50,5 +50,11 @@ nextFn (P (_:npns) _) = P npns $ newDistance npns
 ghostFn gs p@(P (a:b:_) _) = P [b, a] $ newDistance [b, a]
 
 newDistance [_] = 0
--- we can cheat vector length logic because we always move in a single direction
-newDistance ((Pn xa ya):(Pn xb yb):_) = fromIntegral $ abs $ (xb - xa) + (yb - ya)
+newDistance (a:b:_)
+    | outside a && outside b = 0
+    | otherwise = fromIntegral $ l a b
+    where
+      -- when both spots are at maps boundaries it's a teleportation
+      outside (Pn x y) = x <= 0 || y <= 0 || x >= 18 || y >= 20
+      -- we can cheat vector length logic because we always move in a single direction
+      l (Pn xa ya) (Pn xb yb) = abs $ (xb - xa) + (yb - ya)

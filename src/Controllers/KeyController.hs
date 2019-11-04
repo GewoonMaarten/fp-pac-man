@@ -46,16 +46,32 @@ moveFn dirFn gameState =
   gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
-move grid step pm@(PacMan p _ _ _) = if upN /= finalN then mutate else pm
+move grid step pm@(PacMan p _ _ _) = if upN /= head followed then mutate else pm
  where
-  mutate = pm { unPath = P [head $ unNodes p, n upN, n finalN] rd }
+  mutate = pm { unPath = P np rd }
+  -- combine current origin (head) with new followed path
+  np     = (head $ unNodes p) : (map (uncurry Pn) (upN : followed))
   upN    = upcomingNode p
-  finalN = final upN
+  followed = follow upN
   -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
   rd     = unDistance p `mod'` 1
 
-  n      = uncurry Pn
-  final p = if canPass $ get $ step p then final (step p) else p
+  follow p = f (wrap $ step p) (canPass $ get $ step p) 
+    where
+      -- wrap at bounds 
+      f (Just wrapped) _    = p : wrapped : follow wrapped
+      -- move forward
+      f _              True = follow (step p)
+      -- finish
+      f _              _    = [p]
+
+  -- wrap boundary nodes to the other side
+  wrap (-1, y) = Just (18, y)
+  wrap (19, y) = Just (0, y)
+  wrap (x, -1) = Just (x, 20)
+  wrap (x, 21) = Just (x, 0)
+  wrap _ = Nothing
+
   get (x, y) = level !! y !! x
   canPass Empty               = True
   canPass Collectible{}       = True
