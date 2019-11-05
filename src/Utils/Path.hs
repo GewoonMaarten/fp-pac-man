@@ -59,7 +59,9 @@ type PickDirectionFn = PathNode -> [PathDirection] -> PathDirection
 
 -- implement ghost choice using PacMan Path in PickDirectionFn
 ghostFn :: CanPassFn -> PickDirectionFn -> Path -> Path
-ghostFn canPass pick (P (a:b:_) _) = P p $ newDistance p
+ghostFn canPass pick gp@(P (a:b:_) _)
+  | outside b = nextFn gp
+  | otherwise = P p $ newDistance p
     where
         -- create new path from node b following in direction d
         p = b : follow canPass isFinished (stepFn d) b
@@ -69,18 +71,22 @@ ghostFn canPass pick (P (a:b:_) _) = P p $ newDistance p
         isFinished pn = pn /= b && atJunction canPass pn
 
 -- Determine if we can choose directions again
-atJunction canPass p = (> 2) $ length $ directions canPass p p
+atJunction canPass p = no && j
+  where 
+    no = not (outside p)
+    j  = (> 2) $ length $ directions canPass p p
 
 newDistance :: [PathNode] -> Float
 newDistance [_] = 0
 newDistance (a:b:_)
+    -- when both spots are at maps boundaries it's a teleportation
     | outside a && outside b = 0
     | otherwise = fromIntegral $ l a b
     where
-      -- when both spots are at maps boundaries it's a teleportation
-      outside (x, y) = x <= 0 || y <= 0 || x >= 18 || y >= 20
       -- we can cheat vector length logic because we always move in a single direction
       l (xa, ya) (xb, yb) = abs $ (xb - xa) + (yb - ya)
+
+outside (x, y) = x <= 0 || y <= 0 || x >= 18 || y >= 20
 
 dir :: PathNode -> PathNode -> PathDirection
 dir (x1, y1) (x2, y2) = (d x1 x2, d y1 y2)
