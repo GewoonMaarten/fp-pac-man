@@ -39,3 +39,7 @@ data GridItem = Empty
               | SpawnPoint
               | Collectible CollectibleState CollectibleType CollectibleScore
   deriving (Show)
+
+canPass Empty               = True
+canPass Collectible{}       = True
+canPass _                   = False

@@ -57,28 +57,9 @@ move grid step pm@(PacMan p _ _ _) = if upN /= head followed then mutate else pm
   -- combine current origin (head) with new followed path
   newPath = (head $ unNodes p) : (map (uncurry Pn) (upN : followed))
   upN = upcomingNode p
-  followed = follow upN
+  followed = follow (canPass . get) step upN
   -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
   newDistance = unDistance p `mod'` 1
 
-  follow p = f (wrap $ step p) (canPass $ get $ step p) 
-    where
-      -- wrap at bounds 
-      f (Just wrapped) _    = p : wrapped : follow wrapped
-      -- move forward
-      f _              True = follow (step p)
-      -- finish
-      f _              _    = [p]
-
-  -- wrap boundary nodes to the other side
-  wrap (-1, y) = Just (18, y)
-  wrap (19, y) = Just (0, y)
-  wrap (x, -1) = Just (x, 20)
-  wrap (x, 21) = Just (x, 0)
-  wrap _ = Nothing
-
   get (x, y) = level !! y !! x
-  canPass Empty               = True
-  canPass Collectible{}       = True
-  canPass _                   = False
   level = getGridItems grid
