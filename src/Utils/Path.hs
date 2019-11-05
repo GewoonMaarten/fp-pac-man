@@ -45,19 +45,18 @@ movePath' nfn dt p
 -- just move to the next node
 nextFn (P (_:npns) _) = P npns $ newDistance npns
 
-type CanPassFn = (Int, Int) -> Bool
-type StepFn    = (Int, Int) -> (Int, Int)
+type CanPassFn = PathNode -> Bool
+type StepFn    = PathNode -> PathNode
+
+type PathDirection = (Int, Int)
 
 -- implement ghost choice using GameState at this level
 ghostFn :: CanPassFn -> Path -> Path -> Path
 ghostFn canPass pmPath (P (a:b:_) _) = P p $ newDistance p
     where
-        p = b : (follow canPass step b)
-        step :: StepFn
-        step (x, y) = (x + nx, y + ny)
-        -- choose first direction we can move to as step
-        (nx, ny) = head d
-        d = directions canPass b a
+        p = b : (follow canPass (stepFn d) b)
+        ds = directions canPass b a
+        d  = head ds
 
 newDistance :: [PathNode] -> Float
 newDistance [_] = 0
@@ -70,7 +69,7 @@ newDistance (a:b:_)
       -- we can cheat vector length logic because we always move in a single direction
       l (xa, ya) (xb, yb) = abs $ (xb - xa) + (yb - ya)
 
-dir :: PathNode -> PathNode -> (Int, Int)
+dir :: PathNode -> PathNode -> PathDirection
 dir (x1, y1) (x2, y2) = (d x1 x2, d y1 y2)
   where 
     d a b
@@ -80,20 +79,24 @@ dir (x1, y1) (x2, y2) = (d x1 x2, d y1 y2)
 
 -- First pass the current PathNode for which to resolve new directions.
 -- Then pass the previous PathNode so we can exclude it to prevent turning around
-directions :: CanPassFn -> PathNode -> PathNode -> [(Int, Int)]
-directions canPass b@(x, y) a = filter canGoTo [(-1, 0), (1, 0), (0, -1), (0, 1)]
+directions :: CanPassFn -> PathNode -> PathNode -> [PathDirection]
+directions canPass b a = filter canGoTo [(-1, 0), (1, 0), (0, -1), (0, 1)]
   where 
-    canGoTo n@(nx, ny) = n /= (dir b a) && (canPass (x + nx, y + ny))
+    canGoTo d = d /= revD && (canPass $ stepFn d b)
+    revD      = dir b a
+
+stepFn :: PathDirection -> StepFn
+stepFn (nx, ny) (x, y) = (x + nx, y + ny) 
 
 -- wrap boundary nodes to the other side
-wrap :: (Int, Int) -> Maybe (Int, Int)
+wrap :: PathNode -> Maybe PathNode
 wrap (-1, y) = Just (18, y)
 wrap (19, y) = Just (0, y)
 wrap (x, -1) = Just (x, 20)
 wrap (x, 21) = Just (x, 0)
 wrap _ = Nothing
 
-follow :: CanPassFn -> StepFn -> (Int, Int) -> [(Int, Int)]
+follow :: CanPassFn -> StepFn -> PathNode -> [PathNode]
 follow canPass step p = f (wrap $ step p) (canPass $ step p) 
   where
     fl = follow canPass step
