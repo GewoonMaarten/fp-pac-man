@@ -39,10 +39,13 @@ update dt = return . performUpdate dt
 
 performUpdate :: Float -> GameState -> GameState
 performUpdate dt gs = updateAnimation dt $ collectItems $ gs
-    { unPacMan = performPacManUpdate dt (unPacMan gs)
-    , unGhosts = map (performGhostUpdate (ghostFn (canPass . get)) dt) (unGhosts gs)
+    { unPacMan = pm
+    , unGhosts = map gu $ unGhosts gs
     }
-    where get = getGridItem $ unLevel gs
+    where
+        get = getGridItem $ unLevel gs
+        pm  = performPacManUpdate dt (unPacMan gs)
+        gu  = performGhostUpdate (canPass . get) (unPath pm) dt
 
 -- number of seconds to wait to update the animation    
 animationUpdateTime = 0.1
