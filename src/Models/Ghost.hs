@@ -22,7 +22,15 @@ initialGhost Pinky  = Ghost (P [(12, 7), (12, 11)] 4) Pinky
 initialGhost Clyde  = Ghost (P [(12, 11), (6, 11)] 6) Clyde
 
 performGhostUpdate canPass pmPath dt g =
-  g { unPathG = movePath' (ghostFn canPass pmPath) (dt * 4) (unPathG g) }
+  g { unPathG = movePath' (ghostFn canPass pickFn) (dt * 4) (unPathG g) }
+  where
+    pickFn = pick $ unType g
+    -- implement different pick behaviours depending on pmPath
+    pick :: GhostType -> PathNode -> [PathDirection] -> PathDirection
+    pick Blinky (x, y) ds = head ds
+    pick Inky (x, y) ds = head ds
+    pick Pinky (x, y) ds = last ds
+    pick Clyde (x, y) ds = last ds
 
 drawGhost :: Ghost -> [(Int, TextureSet)] -> Picture
 drawGhost _ [] = blank

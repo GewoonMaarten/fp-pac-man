@@ -49,14 +49,16 @@ type CanPassFn = PathNode -> Bool
 type StepFn    = PathNode -> PathNode
 
 type PathDirection = (Int, Int)
+type PickDirectionFn = PathNode -> [PathDirection] -> PathDirection
 
--- implement ghost choice using GameState at this level
-ghostFn :: CanPassFn -> Path -> Path -> Path
-ghostFn canPass pmPath (P (a:b:_) _) = P p $ newDistance p
+-- implement ghost choice using PacMan Path in PickDirectionFn
+ghostFn :: CanPassFn -> PickDirectionFn -> Path -> Path
+ghostFn canPass pick (P (a:b:_) _) = P p $ newDistance p
     where
-        p = b : (follow canPass (stepFn d) b)
+        -- create new path from node b following in direction d
+        p = b : follow canPass (stepFn d) b
         ds = directions canPass b a
-        d  = head ds
+        d  = pick b ds
 
 newDistance :: [PathNode] -> Float
 newDistance [_] = 0
