@@ -27,10 +27,11 @@ performGhostUpdate canPass pmPath dt g =
     pickFn = pick $ unType g
     -- implement different pick behaviours depending on pmPath
     pick :: GhostType -> PathNode -> [PathDirection] -> PathDirection
-    pick Blinky (x, y) ds = head ds
-    pick Inky (x, y) ds = head ds
-    pick Pinky (x, y) ds = last ds
-    pick Clyde (x, y) ds = last ds
+    pick Blinky l ds = bestDirection l ds (source pmPath)
+    pick Inky l ds = bestDirection l ds (source pmPath)
+    pick Pinky l ds = bestDirection l ds (destination pmPath)
+    pick Clyde l ds = bestDirection l ds (destination pmPath)
+
 
 drawGhost :: Ghost -> [(Int, TextureSet)] -> Picture
 drawGhost _ [] = blank

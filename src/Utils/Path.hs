@@ -3,6 +3,8 @@ module Utils.Path where
 import           Graphics.Gloss hiding (Path)
 import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic as Pt
+import           Data.List
+import           Data.Ord
 
 type PathNode = (Int, Int)
 type NodeDistance = Float
@@ -26,6 +28,10 @@ locationImp (a:b:_) d = vb Pt.+ (d Pt.* n)
 
 toVector :: PathNode -> Vector
 toVector (x, y) = (fromIntegral x, fromIntegral y)
+
+source p = head $ unNodes p
+destination (P (_:b:_) _) = b
+destination p = source p
 
 {- MOVE -}
 
@@ -86,6 +92,13 @@ directions canPass b a = filter canGoTo [(-1, 0), (1, 0), (0, -1), (0, 1)]
   where 
     canGoTo d = d /= revD && (canPass $ stepFn d b)
     revD      = dir b a
+
+bestDirection :: PathNode -> [PathDirection] -> PathNode -> PathDirection
+bestDirection a ds b = head $ map snd $ sortOn Down $ map wv ds
+  where
+    n = normalizeV $ (toVector b) Pt.- (toVector a)
+    wv :: PathDirection -> (Float, PathDirection)
+    wv d = (dotV n (toVector d), d)
 
 stepFn :: PathDirection -> StepFn
 stepFn (nx, ny) (x, y) = (x + nx, y + ny) 
