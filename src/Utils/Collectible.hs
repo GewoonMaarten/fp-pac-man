@@ -1,5 +1,7 @@
 module Utils.Collectible
-  ( collectItems, toggleEnergizer
+  ( collectItems
+  , toggleEnergizer
+  , updateEnergizerTimers
   )
 where
 
@@ -10,7 +12,7 @@ import           Model
 import           Utils.Path
 
 collectItems :: GameState -> GameState
-collectItems gs@(GameState{unLevel = Grid {getGridItems = []}}) = gs
+collectItems gs@(GameState { unLevel = Grid { getGridItems = [] } }) = gs
 collectItems gs =
   let p                   = unPacMan gs
       score               = unScore p
@@ -19,21 +21,21 @@ collectItems gs =
       gridItems           = getGridItems grid
       (giss1, gi : giss2) = splitAt (floor py) gridItems
       (gis1 , g : gis2  ) = splitAt (floor px) gi
-      (g1,s)              = pickup g
+      (g1   , s         ) = pickup g
       gis                 = gis1 ++ g1 : gis2
-      giss                = giss1 ++ gis : giss2 in 
-  doToggleEnergizer g1 $ gs { 
-    unLevel = grid { getGridItems = giss }, 
-    unPacMan = p { unScore = score + s } 
-  }
-  where
-    pickup :: GridItem -> (GridItem,Int)
-    pickup (Collectible Available t p) = (Collectible Collected t p, p)
-    pickup g                           = (g, 0)
-    doToggleEnergizer :: GridItem -> GameState -> GameState
-    doToggleEnergizer (Collectible _ Energizer _) gs | isToggled gs = gs
-                                                     | otherwise = toggleEnergizer gs
-    doToggleEnergizer _ gs = gs
+      giss                = giss1 ++ gis : giss2
+  in  doToggleEnergizer g1 $ gs { unLevel  = grid { getGridItems = giss }
+                                , unPacMan = p { unScore = score + s }
+                                }
+ where
+  pickup :: GridItem -> (GridItem, Int)
+  pickup (Collectible Available t p) = (Collectible Collected t p, p)
+  pickup g                           = (g, 0)
+  doToggleEnergizer :: GridItem -> GameState -> GameState
+  doToggleEnergizer (Collectible _ Energizer _) gs
+    | isToggled gs = gs
+    | otherwise    = toggleEnergizer gs
+  doToggleEnergizer _ gs = gs
 -- getAllCollectibles :: GameState -> [GridItem]
 -- getAllCollectibles gs = let level     = unLevel gs 
 --                             gridItems = getGridItems level in
@@ -41,29 +43,26 @@ collectItems gs =
 
 isToggled :: GameState -> Bool
 isToggled gs = any checkEdible $ unGhosts gs
-  where
-    checkEdible  (Ghost _ _ (Edible _) _ _) = True
-    checkEdible _ = False
+ where
+  checkEdible (Ghost _ _ (Edible _) _ _) = True
+  checkEdible _                          = False
 toggleEnergizer :: GameState -> GameState
 toggleEnergizer gs | isToggled gs = removeEnergizer gs
-                   | otherwise = applyEnergizer gs
-  where
-    applyEnergizer, removeEnergizer :: GameState -> GameState
-    applyEnergizer = changeGhostState (Edible GOne)
-    removeEnergizer = changeGhostState Normal
-    changeGhostState :: GhostState -> GameState -> GameState
-    changeGhostState _ gs@GameState{unGhosts=[]} = gs
-    changeGhostState gst gs = gs{
-      unGhosts = map (\ ghost -> ghost{ unGhostState = gst }) $ unGhosts gs
-    } 
+                   | otherwise    = applyEnergizer gs
+ where
+  applyEnergizer, removeEnergizer :: GameState -> GameState
+  applyEnergizer  = changeGhostState (Edible GOne)
+  removeEnergizer = changeGhostState (Normal GOne)
+  changeGhostState :: GhostState -> GameState -> GameState
+  changeGhostState _ gs@GameState { unGhosts = [] } = gs
+  changeGhostState gst gs =
+    gs { unGhosts = map (\ghost -> ghost { unGhostState = gst }) $ unGhosts gs }
 
 updateEnergizerTimers :: Float -> GameState -> GameState
-updateEnergizerTimers secs gs = let ghosts = unGhosts gs in
-  gs{unGhosts = map updateEngerizerTimer ghosts}
-    where 
-      updateEngerizerTimer g@(Ghost _ _ (Edible _) _ timer) 
-        | timer - secs > 0 = g{
-          unGhostEdibleTimer = timer - secs
-        }
-        | otherwise = g{unGhostEdibleTimer = 0}
-      updateEngerizerTimer g = g{unGhostEdibleTimer = 0}
+updateEnergizerTimers secs gs =
+  let ghosts = unGhosts gs in gs { unGhosts = map updateEngerizerTimer ghosts }
+ where
+  updateEngerizerTimer g@(Ghost _ _ (Edible _) _ timer)
+    | timer - secs > 0 = g { unGhostEdibleTimer = timer - secs }
+    | otherwise        = g { unGhostEdibleTimer = 0 }
+  updateEngerizerTimer g = g { unGhostEdibleTimer = 0 }
