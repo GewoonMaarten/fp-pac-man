@@ -58,6 +58,6 @@ move grid step pm = if upN /= head followed then mutate else pm
   -- combine current origin (head) with new followed path
   newPath = (head $ unNodes p) : upN : followed
   upN = upcomingNode p
-  followed = follow (canPass . getGridItem grid) step upN
+  followed = follow (canPass . getGridItem grid) (const False) step upN
   -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
   newDistance = unDistance p `mod'` 1

@@ -62,9 +62,14 @@ ghostFn :: CanPassFn -> PickDirectionFn -> Path -> Path
 ghostFn canPass pick (P (a:b:_) _) = P p $ newDistance p
     where
         -- create new path from node b following in direction d
-        p = b : follow canPass (stepFn d) b
+        p = b : follow canPass isFinished (stepFn d) b
         ds = directions canPass b a
         d  = pick b ds
+        -- When we are not at the start node b and we are at a junction
+        isFinished pn = pn /= b && atJunction canPass pn
+
+-- Determine if we can choose directions again
+atJunction canPass p = (> 2) $ length $ directions canPass p p
 
 newDistance :: [PathNode] -> Float
 newDistance [_] = 0
@@ -111,13 +116,14 @@ wrap (x, -1) = Just (x, 20)
 wrap (x, 21) = Just (x, 0)
 wrap _ = Nothing
 
-follow :: CanPassFn -> StepFn -> PathNode -> [PathNode]
-follow canPass step p = f (wrap $ step p) (canPass $ step p) 
+-- IsFinished can be used to abort the path at another location
+follow :: CanPassFn -> (PathNode -> Bool) -> StepFn -> PathNode -> [PathNode]
+follow canPass isFinished step p = f (isFinished p) (wrap $ step p) (canPass $ step p) 
   where
-    fl = follow canPass step
+    fl = follow canPass isFinished step
     -- wrap at bounds 
-    f (Just wrapped) _    = p : wrapped : fl wrapped
+    f False (Just wrapped) _    = p : wrapped : fl wrapped
     -- move forward
-    f _              True = fl (step p)
+    f False _              True = fl (step p)
     -- finish
-    f _              _    = [p]
+    f _     _              _    = [p]
