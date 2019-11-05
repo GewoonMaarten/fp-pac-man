@@ -40,20 +40,9 @@ update dt = return . performUpdate dt
 performUpdate :: Float -> GameState -> GameState
 performUpdate dt gs = updateAnimation dt $ collectItems $ gs
     { unPacMan = performPacManUpdate dt (unPacMan gs)
-    , unGhosts = map (performGhostUpdate (ghostFn gs) dt) (unGhosts gs)
+    , unGhosts = map (performGhostUpdate (ghostFn (canPass . get)) dt) (unGhosts gs)
     }
-
--- implement ghost choice using GameState at this level
-ghostFn gs p@(P (a:b:_) _) = P p $ newDistance p
-    where
-        p = b : map (uncurry Pn) (follow (canPass . get) step $ f b)
-        f (Pn x y) = (x, y)
-        d = directions (canPass . get) b a
-        (nx, ny) = head d
-        step (x, y) = (x + nx, y + ny)
-        
-        get (x, y) = level !! y !! x
-        level = getGridItems $ unLevel gs
+    where get = getGridItem $ unLevel gs
 
 -- number of seconds to wait to update the animation    
 animationUpdateTime = 0.1

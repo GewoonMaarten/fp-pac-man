@@ -46,6 +46,15 @@ movePath' nfn dt p
 -- just move to the next node
 nextFn (P (_:npns) _) = P npns $ newDistance npns
 
+-- implement ghost choice using GameState at this level
+ghostFn canPass p@(P (a:b:_) _) = P p $ newDistance p
+    where
+        p = b : map (uncurry Pn) (follow canPass step $ f b)
+        f (Pn x y) = (x, y)
+        d = directions canPass b a
+        (nx, ny) = head d
+        step (x, y) = (x + nx, y + ny)
+
 newDistance [_] = 0
 newDistance (a:b:_)
     | outside a && outside b = 0

@@ -43,3 +43,6 @@ data GridItem = Empty
 canPass Empty               = True
 canPass Collectible{}       = True
 canPass _                   = False
+
+getGridItem grid (x, y) = level !! y !! x
+  where level = getGridItems grid
