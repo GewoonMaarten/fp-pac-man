@@ -4,7 +4,6 @@ import           Models.PacMan
 import           Models.Ghost
 
 data GameState = GameState {
-    elapsedTime :: Float,
     unScene :: Scene,
     unLevel :: Grid,
     unPacMan :: PacMan,

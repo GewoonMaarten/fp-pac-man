@@ -16,11 +16,15 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-    Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 255 20, unGhosts = [ initialGhost Blinky False
-    , initialGhost Inky   False
-    , initialGhost Pinky  False
-    , initialGhost Clyde  False
-    ] }
+    Home     -> gameState { 
+      unScene = Play, 
+      unLevel = buildGrid (-180) 255 20, 
+      unGhosts = [ initialGhost Blinky
+      , initialGhost Inky
+      , initialGhost Pinky
+      , initialGhost Clyde
+      ] 
+    }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
@@ -51,7 +55,7 @@ moveFn dirFn gameState =
   gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
-move grid step pm@(PacMan p _ _ _) = if upN /= head followed then mutate else pm
+move grid step pm@(PacMan p _ _ _ _) = if upN /= head followed then mutate else pm
  where
   mutate = pm { unPath = P newPath newDistance }
   -- combine current origin (head) with new followed path

@@ -11,7 +11,8 @@ data PacMan = PacMan {
     unPath :: Path,
     unScore :: Int,
     unLives :: Int,
-    unMovement :: Maybe Movement
+    unMovement :: Maybe Movement,
+    unAnimTimer :: Float
 } deriving (Show)
 
 data Movement = Movement {
@@ -21,7 +22,7 @@ data Movement = Movement {
 
 data Direction = MoveUp | MoveDown | MoveLeft | MoveRight 
   deriving (Show, Enum)
-data AnimStage = One | Two | Three | Four 
+data AnimStage = POne | PTwo | PThree | PFour 
   deriving (Show, Eq, Enum, Bounded)
 
 initialPacMan :: PacMan
@@ -29,7 +30,8 @@ initialPacMan = PacMan
   (P [Pn 9 7] 1) -- Path
   0 -- Score
   3 -- Lifes
-  (Just (Movement MoveLeft Three)) -- Movement
+  (Just (Movement MoveLeft PThree)) -- Movement
+  0 -- Animation timer
 
 performPacManUpdate :: Float -> PacMan -> PacMan
 performPacManUpdate dt pm = pm { unPath = path, unMovement = mv (unMovement pm) }
@@ -47,16 +49,16 @@ performPacManUpdate dt pm = pm { unPath = path, unMovement = mv (unMovement pm) 
       | otherwise = d
 
 showPacMan :: TextureSet -> PacMan -> Picture
-showPacMan ts pm@(PacMan _ _ _ movement) = let (x, y) = getLoc pm in 
+showPacMan ts pm@(PacMan _ _ _ movement _) = let (x, y) = getLoc pm in 
     translate x (-y) $ case movement of
       Just (Movement dir stage) -> pacmManRotate dir $ pacManScale $ getTexture ts stage
-      Nothing                   -> pacManScale $ getTexture ts Three
+      Nothing                   -> pacManScale $ getTexture ts PThree
   where
     getTexture :: TextureSet -> AnimStage -> Picture
-    getTexture ( PacManTextureSet p _ _ _ ) One   = p
-    getTexture ( PacManTextureSet _ p _ _ ) Two   = p
-    getTexture ( PacManTextureSet _ _ p _ ) Three = p
-    getTexture ( PacManTextureSet _ _ _ p ) Four  = p
+    getTexture ( PacManTextureSet p _ _ _ ) POne   = p
+    getTexture ( PacManTextureSet _ p _ _ ) PTwo   = p
+    getTexture ( PacManTextureSet _ _ p _ ) PThree = p
+    getTexture ( PacManTextureSet _ _ _ p ) PFour  = p
     getLoc :: PacMan -> (Float, Float)
     getLoc pm = ((-180, -255) Pt.+ 20 Pt.* (actualLocation $ unPath pm))
     pacManScale :: Picture -> Picture
