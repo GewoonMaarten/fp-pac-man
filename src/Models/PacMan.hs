@@ -26,7 +26,7 @@ data AnimStage = One | Two | Three | Four
 
 initialPacMan :: PacMan
 initialPacMan = PacMan 
-  (P [Pn 9 7] 1) -- Path
+  (P [(9, 7)] 1) -- Path
   0 -- Score
   3 -- Lifes
   (Just (Movement MoveLeft Three)) -- Movement
@@ -39,7 +39,7 @@ performPacManUpdate dt pm = pm { unPath = path, unMovement = mv (unMovement pm) 
     mv Nothing         = Nothing
     upd (P [_] _)     d = d
     upd (P (a:b:_) _) d = dir d a b
-    dir d (Pn x1 y1) (Pn x2 y2)
+    dir d (x1, y1) (x2, y2)
       | x1 < x2 = MoveRight
       | x1 > x2 = MoveLeft
       | y1 < y2 = MoveDown

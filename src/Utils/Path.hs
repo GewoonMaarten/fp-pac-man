@@ -4,8 +4,7 @@ import           Graphics.Gloss hiding (Path)
 import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic as Pt
 
-data PathNode = Pn Int Int
-  deriving(Eq, Show)
+type PathNode = (Int, Int)
 type NodeDistance = Float
 data Path = P {
   unNodes :: [PathNode],
@@ -26,7 +25,7 @@ locationImp (a:b:_) d = vb Pt.+ (d Pt.* n)
     n = if delta == (0,0) then (0,0) else normalizeV delta
 
 toVector :: PathNode -> Vector
-toVector (Pn x y) = (fromIntegral x, fromIntegral y)
+toVector (x, y) = (fromIntegral x, fromIntegral y)
 
 {- MOVE -}
 
@@ -51,9 +50,9 @@ type StepFn    = (Int, Int) -> (Int, Int)
 
 -- implement ghost choice using GameState at this level
 ghostFn :: CanPassFn -> Path -> Path -> Path
-ghostFn canPass pmPath (P (a:b@(Pn bx by):_) _) = P p $ newDistance p
+ghostFn canPass pmPath (P (a:b:_) _) = P p $ newDistance p
     where
-        p = b : map (uncurry Pn) (follow canPass step (bx, by))
+        p = b : (follow canPass step b)
         step :: StepFn
         step (x, y) = (x + nx, y + ny)
         -- choose first direction we can move to as step
@@ -67,12 +66,12 @@ newDistance (a:b:_)
     | otherwise = fromIntegral $ l a b
     where
       -- when both spots are at maps boundaries it's a teleportation
-      outside (Pn x y) = x <= 0 || y <= 0 || x >= 18 || y >= 20
+      outside (x, y) = x <= 0 || y <= 0 || x >= 18 || y >= 20
       -- we can cheat vector length logic because we always move in a single direction
-      l (Pn xa ya) (Pn xb yb) = abs $ (xb - xa) + (yb - ya)
+      l (xa, ya) (xb, yb) = abs $ (xb - xa) + (yb - ya)
 
 dir :: PathNode -> PathNode -> (Int, Int)
-dir (Pn x1 y1) (Pn x2 y2) = (d x1 x2, d y1 y2)
+dir (x1, y1) (x2, y2) = (d x1 x2, d y1 y2)
   where 
     d a b
       | a < b     = 1
@@ -82,7 +81,7 @@ dir (Pn x1 y1) (Pn x2 y2) = (d x1 x2, d y1 y2)
 -- First pass the current PathNode for which to resolve new directions.
 -- Then pass the previous PathNode so we can exclude it to prevent turning around
 directions :: CanPassFn -> PathNode -> PathNode -> [(Int, Int)]
-directions canPass b@(Pn x y) a = filter canGoTo [(-1, 0), (1, 0), (0, -1), (0, 1)]
+directions canPass b@(x, y) a = filter canGoTo [(-1, 0), (1, 0), (0, -1), (0, 1)]
   where 
     canGoTo n@(nx, ny) = n /= (dir b a) && (canPass (x + nx, y + ny))
 

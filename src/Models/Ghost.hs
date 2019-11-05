@@ -16,10 +16,10 @@ data Ghost = Ghost {
     unIsAfraid :: IsAfraid
 } deriving (Show)
 
-initialGhost Blinky = Ghost (P [Pn 6 7, Pn 12 7] 6) Blinky
-initialGhost Inky   = Ghost (P [Pn 6 11, Pn 6 7] 4) Inky
-initialGhost Pinky  = Ghost (P [Pn 12 7, Pn 12 11] 4) Pinky
-initialGhost Clyde  = Ghost (P [Pn 12 11, Pn 6 11] 6) Clyde
+initialGhost Blinky = Ghost (P [(6, 7), (12, 7)] 6) Blinky
+initialGhost Inky   = Ghost (P [(6, 11), (6, 7)] 4) Inky
+initialGhost Pinky  = Ghost (P [(12, 7), (12, 11)] 4) Pinky
+initialGhost Clyde  = Ghost (P [(12, 11), (6, 11)] 6) Clyde
 
 performGhostUpdate canPass pmPath dt g =
   g { unPathG = movePath' (ghostFn canPass pmPath) (dt * 4) (unPathG g) }
