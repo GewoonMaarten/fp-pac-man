@@ -26,11 +26,7 @@ intialGameState = GameState
     Home
     (Grid [] 0 0 0)
     initialPacMan
-    [ initialGhost Blinky False
-    , initialGhost Inky   False
-    , initialGhost Pinky  False
-    , initialGhost Clyde  False
-    ]
+    []
 
 draw :: GameState -> IO Picture
 draw gs = drawView gs <$> loadTextures
@@ -66,22 +62,22 @@ ghostFn gs p@(P (a:b:_) _) = P p $ newDistance p
                 
         get (x, y) = level !! y !! x
         level = getGridItems $ unLevel gs
-
+    
 dir (Pn x1 y1) (Pn x2 y2) = (d x1 x2, d y1 y2)
-    where 
-        d a b
-            | a < b     = 1
-            | a > b     = -1
-            | otherwise = 0
+where 
+    d a b
+        | a < b     = 1
+        | a > b     = -1
+        | otherwise = 0
 
 -- directions _  _        cameFrom = [cameFrom]
 directions gs (Pn x y) cameFrom = filter canGoTo [(-1, 0), (1, 0), (0, -1), (0, 1)]
-  where 
-    canGoTo n@(nx, ny) = n /= cameFrom && (canPass $ get (x + nx, y + ny))
+where 
+canGoTo n@(nx, ny) = n /= cameFrom && (canPass $ get (x + nx, y + ny))
 
-    get (x, y) = level !! y !! x
-    level = getGridItems $ unLevel gs
-    
+get (x, y) = level !! y !! x
+level = getGridItems $ unLevel gs
+
 canPass Empty               = True
 canPass Collectible{}       = True
 canPass _                   = False
@@ -98,14 +94,14 @@ animationUpdateTime = 0.1
 
 updateAnimation :: Float -> GameState -> GameState
 updateAnimation secs gs@(GameState _ Play _ p@(PacMan _ _ _ (Just (Movement dir stage))) _)
-    | elapsedTime gs + secs > animationUpdateTime
-    = gs { elapsedTime = 0
-         , unPacMan = p{unMovement = Just (Movement dir (nextStage stage))}
-         }
-    | otherwise
-    = gs { elapsedTime = elapsedTime gs + secs }
-  where
-    nextStage :: AnimStage -> AnimStage
-    nextStage s | fromEnum s + 1 > fromEnum (maxBound :: AnimStage) = toEnum 0
-                | otherwise = succ s
+| elapsedTime gs + secs > animationUpdateTime
+= gs { elapsedTime = 0
+     , unPacMan = p{unMovement = Just (Movement dir (nextStage stage))}
+     }
+| otherwise
+= gs { elapsedTime = elapsedTime gs + secs }
+where
+nextStage :: AnimStage -> AnimStage
+nextStage s | fromEnum s + 1 > fromEnum (maxBound :: AnimStage) = toEnum 0
+            | otherwise = succ s
 updateAnimation secs gs = gs { elapsedTime = elapsedTime gs + secs }

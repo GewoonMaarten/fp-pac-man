@@ -11,7 +11,7 @@ data GhostType = Blinky | Inky | Pinky | Clyde deriving (Eq, Show, Enum)
 type IsAfraid = Bool
 
 data Ghost = Ghost {
-    unPath :: Path,
+    unPathG :: Path,
     unType :: GhostType,
     unIsAfraid :: IsAfraid
 } deriving (Show)
@@ -22,7 +22,7 @@ initialGhost Pinky  = Ghost (P [Pn 12 7, Pn 12 11] 4) Pinky
 initialGhost Clyde  = Ghost (P [Pn 12 11, Pn 6 11] 6) Clyde
 
 performGhostUpdate ghostFn dt g =
-  g { unPath = movePath' ghostFn (dt * 4) (unPath g) }
+  g { unPathG = movePath' ghostFn (dt * 4) (unPathG g) }
 
 drawGhost :: Ghost -> [(Int, TextureSet)] -> Picture
 drawGhost _ [] = blank

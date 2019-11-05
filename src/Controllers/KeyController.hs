@@ -7,6 +7,7 @@ import           Model
 import           Models.PacMan
 import           Utils.Path
 import           Models.Level
+import           Models.Ghost
 import           Graphics.Gloss.Interface.IO.Game
 import           Data.Fixed                     ( mod' )
 
@@ -15,7 +16,11 @@ inputHandler :: Event -> GameState -> GameState
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
     Play     -> gameState
-    Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 255 20 }
+    Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 255 20, unGhosts = [ initialGhost Blinky False
+    , initialGhost Inky   False
+    , initialGhost Pinky  False
+    , initialGhost Clyde  False
+    ] }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
