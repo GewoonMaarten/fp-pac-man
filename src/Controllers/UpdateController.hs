@@ -8,12 +8,11 @@ import           Utils.Collectible
 import           Utils.Path
 import {-# SOURCE #-} Controllers.SceneController
                                                 ( getScene )
-performUpdate :: Float -> GameState -> GameState
-performUpdate dt gs =
-  checkGameOver $ updateEnergizerTimers dt $ collectItems $ gs
-    { unPacMan = updateAnimation dt $ performPacManUpdate dt (unPacMan gs)
-    , unGhosts = map gu $ unGhosts gs
-    }
+updatePlay :: Float -> GameState -> GameState
+updatePlay dt gs = checkGameOver $ updateEnergizerTimers dt $ collectItems $ gs
+  { unPacMan = updateAnimation dt $ performPacManUpdate dt (unPacMan gs)
+  , unGhosts = map gu $ unGhosts gs
+  }
  where
   get = getGridItem $ unLevel gs
   pm  = performPacManUpdate dt (unPacMan gs)

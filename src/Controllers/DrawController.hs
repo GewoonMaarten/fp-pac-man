@@ -13,11 +13,12 @@ import           Utils.Graphics
 drawHome, drawPlay :: Textures -> GameState -> Picture
 drawPlay ts@(Textures _ _ gt gat pt pdt _) gameState =
   pictures
-    $  (showGrid $ unLevel gameState)
+    $  showGrid (unLevel gameState)
     ++ [ drawGhost g ts | g <- unGhosts gameState ]
-    ++ [showPacMan pt $ unPacMan gameState]
-    ++ [showScore $ unPacMan gameState]
-    ++ [showLives ts $ unPacMan gameState]
+    ++ [ showPacMan pt $ unPacMan gameState
+       , showScore $ unPacMan gameState
+       , showLives ts $ unPacMan gameState
+       ]
 
 drawHome ts _ = pictures [banner, menuText, startText, quitText]
  where

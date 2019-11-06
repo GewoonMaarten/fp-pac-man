@@ -17,7 +17,7 @@ homeScene = Scene { sceneType   = Home
 playScene = Scene { sceneType   = Play
                   , sceneDraw   = drawPlay
                   , sceneInput  = inputPlay
-                  , sceneUpdate = performUpdate
+                  , sceneUpdate = updatePlay
                   }
 pauseScene = Scene { sceneType   = Pause
                    , sceneDraw   = drawPause
