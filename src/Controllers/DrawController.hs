@@ -8,7 +8,7 @@ import           Model
 import           Models.PacMan
 import           Models.Ghost
 import           Models.Level
-import           Graphics
+import           Utils.Graphics
 
 drawHome, drawPlay :: Textures -> GameState -> Picture
 drawPlay ts@(Textures _ _ gt gat pt pdt _) gameState =

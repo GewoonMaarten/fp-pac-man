@@ -1,6 +1,7 @@
-module Graphics where
+module Utils.Graphics where
 
 import           Graphics.Gloss
+
 data TextureSet = PacManTextureSet Picture Picture Picture Picture
   | DeathTextureSet Picture Picture Picture
   | GhostTextureSet Picture Picture

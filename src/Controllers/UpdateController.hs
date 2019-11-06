@@ -6,7 +6,6 @@ import           Models.Ghost
 import           Controllers.Animator
 import           Utils.Collectible
 import           Utils.Path
-import           Graphics
 
 performUpdate :: Float -> GameState -> GameState
 performUpdate dt gs = updateEnergizerTimers dt $ collectItems $ gs

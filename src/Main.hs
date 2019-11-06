@@ -8,9 +8,11 @@ import           Controllers.KeyController
 import           Controllers.SceneController
 import           Utils.Collectible
 import           Utils.Path
+import           Utils.Graphics
+
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
-import           Graphics
+
 
 main :: IO ()
 main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode

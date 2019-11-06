@@ -23,11 +23,13 @@ executable pac-man
                        Models.PacMan
                        Models.Ghost
                        Models.Level
-                       Graphics
+                       Utils.Graphics
                        Utils.Collectible
                        Utils.Path
                        Controllers.Animator
                        Controllers.SceneController
+                       Controllers.UpdateController
+                       Controllers.DrawController
   -- other-extensions:
   build-depends:       base >= 4 && < 5,
                        gloss,

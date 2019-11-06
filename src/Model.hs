@@ -2,7 +2,7 @@ module Model where
 
 import           Models.PacMan
 import           Models.Ghost
-import           Graphics
+import           Utils.Graphics
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 

@@ -5,7 +5,7 @@ import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic
                                                as Pt
 import           Utils.Path
-import           Graphics
+import           Utils.Graphics
 import           Data.List                      ( find )
 
 data GhostType = Blinky | Inky | Pinky | Clyde deriving (Eq, Show, Enum)
