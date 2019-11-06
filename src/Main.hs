@@ -4,13 +4,13 @@ import           Model
 import           Models.PacMan
 import           Models.Ghost
 import           View
+import           Controllers.Animator
 import           Controllers.KeyController
 import           Utils.Collectible
 import           Utils.Path
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 import           Graphics
-import           Utils.Animator
 
 main :: IO ()
 main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode

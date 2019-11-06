@@ -1,4 +1,4 @@
-module Utils.Animator
+module Controllers.Animator
     ( updateAnimation
     )
 where
