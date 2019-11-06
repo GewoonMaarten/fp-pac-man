@@ -15,12 +15,16 @@ inputHandler :: Event -> GameState -> GameState
 -- Enter Key
 inputHandler (EventKey (SpecialKey KeyEnter) _ _ _) gameState =
   case unScene gameState of
-    Play     -> gameState
-    Home     -> gameState { unScene = Play, unLevel = buildGrid (-180) 255 20, unGhosts = [ initialGhost Blinky False
-    , initialGhost Inky   False
-    , initialGhost Pinky  False
-    , initialGhost Clyde  False
-    ] }
+    Play -> gameState
+    Home -> gameState
+      { unScene  = Play
+      , unLevel  = buildGrid (-180) 255 20
+      , unGhosts = [ initialGhost Blinky
+                   , initialGhost Inky
+                   , initialGhost Pinky
+                   , initialGhost Clyde
+                   ]
+      }
     Pause    -> gameState { unScene = Home }
     GameOver -> gameState { unScene = Home }
 -- Esc Key
@@ -53,11 +57,11 @@ moveFn dirFn gameState =
 move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
 move grid step pm = if upN /= head followed then mutate else pm
  where
-  p = unPath pm
-  mutate = pm { unPath = P newPath newDistance }
+  p           = unPath pm
+  mutate      = pm { unPath = P newPath newDistance }
   -- combine current origin (head) with new followed path
-  newPath = (head $ unNodes p) : upN : followed
-  upN = upcomingNode p
-  followed = follow (canPass . getGridItem grid) (const False) step upN
+  newPath     = (head $ unNodes p) : upN : followed
+  upN         = upcomingNode p
+  followed    = follow (canPass . getGridItem grid) (const False) step upN
   -- new target is upcoming node. So new distance is distance to upcoming node which is the decimal value
   newDistance = unDistance p `mod'` 1
