@@ -30,6 +30,7 @@ instance Animatable PacMan where
 
 
 ghostAnimationUpdateTime = 0.4
+ghostAnimationUpdateTimeFast = 0.2
 instance Animatable Ghost where
     updateAnimation secs g@(Ghost _ _ (Edible stage) _ _)
         | unGhostAnimTimer g + secs > ghostAnimationUpdateTime = g
