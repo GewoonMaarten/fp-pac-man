@@ -24,11 +24,11 @@ data Grid = Grid {
 data CollectibleType = PacDot
                      | Energizer
                      | Fruit
-  deriving (Show)
+  deriving (Eq, Show)
 
 data CollectibleState = Collected
                       | Available
-  deriving (Show)
+  deriving (Eq, Show)
 
 type CollectibleScore = Int
 
@@ -37,11 +37,10 @@ data GridItem = Empty
               | Wall
               | SpawnPoint
               | Collectible CollectibleState CollectibleType CollectibleScore
-  deriving (Show)
+  deriving (Eq, Show)
 
-canPass Empty               = True
-canPass Collectible{}       = True
-canPass _                   = False
+canPass Empty         = True
+canPass Collectible{} = True
+canPass _             = False
 
-getGridItem grid (x, y) = level !! y !! x
-  where level = getGridItems grid
+getGridItem grid (x, y) = level !! y !! x where level = getGridItems grid

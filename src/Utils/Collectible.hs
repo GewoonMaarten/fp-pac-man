@@ -15,7 +15,6 @@ import           Debug.Trace
 -- Number of seconds a ghost should be edible
 ghostEdibleTimer = 10
 
-
 collectItems :: GameState -> GameState
 collectItems gs@(GameState { unLevel = Grid { getGridItems = [] } }) = gs
 collectItems gs =
@@ -41,10 +40,17 @@ collectItems gs =
     | isToggled gs = gs
     | otherwise    = toggleEnergizer gs
   doToggleEnergizer _ gs = gs
--- getAllCollectibles :: GameState -> [GridItem]
--- getAllCollectibles gs = let level     = unLevel gs 
---                             gridItems = getGridItems level in
---   filter (== Collectible) gridItems
+
+getAvailableCollectibles :: GameState -> [GridItem]
+getAvailableCollectibles gs =
+  let level     = unLevel gs
+      gridItems = getGridItems level
+  in  filter
+          (\gi -> case gi of
+            Collectible Available _ _ -> True
+            _                         -> False
+          )
+        $ concat gridItems
 
 isToggled :: GameState -> Bool
 isToggled gs = any checkEdible $ unGhosts gs
