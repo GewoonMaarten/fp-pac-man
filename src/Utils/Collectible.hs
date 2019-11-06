@@ -2,6 +2,7 @@ module Utils.Collectible
   ( collectItems
   , toggleEnergizer
   , updateEnergizerTimers
+  , getAvailableCollectibles
   )
 where
 

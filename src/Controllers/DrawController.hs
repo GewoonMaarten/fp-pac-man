@@ -28,5 +28,5 @@ drawHome ts _ = pictures [banner, menuText, startText, quitText]
   quitText =
     translate (-50) (-35) $ color white $ scale 0.2 0.2 $ text "  Quit"
 
-drawPause _ gs = blank
-drawGameOver _ gs = blank
+drawPause _ gs = text "Pause"
+drawGameOver _ gs = text "GameOver"
