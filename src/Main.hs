@@ -3,9 +3,9 @@ module Main where
 import           Model
 import           Models.PacMan
 import           Models.Ghost
-import           View
 import           Controllers.Animator
 import           Controllers.KeyController
+import           Controllers.SceneController
 import           Utils.Collectible
 import           Utils.Path
 import           Graphics.Gloss
@@ -22,23 +22,15 @@ main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
               update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
-intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan []
+intialGameState = GameState (getScene Home) (Grid [] 0 0 0) initialPacMan []
 
 draw :: GameState -> IO Picture
-draw gs = drawView gs <$> loadTextures
+draw gs = do
+    textures <- loadTextures
+    return ((sceneDraw $ unScene gs) textures gs)
 
 input :: Event -> GameState -> IO GameState
-input event gameState = return (inputHandler event gameState)
+input event gs = return ((sceneInput $ unScene gs) event gs)
 
 update :: Float -> GameState -> IO GameState
-update dt = return . performUpdate dt
-
-performUpdate :: Float -> GameState -> GameState
-performUpdate dt gs = updateEnergizerTimers dt $ collectItems $ gs
-    { unPacMan = updateAnimation dt $ performPacManUpdate dt (unPacMan gs)
-    , unGhosts = map gu $ unGhosts gs
-    }
-  where
-    get = getGridItem $ unLevel gs
-    pm  = performPacManUpdate dt (unPacMan gs)
-    gu  = updateAnimation dt . performGhostUpdate (canPass . get) (unPath pm) dt
+update dt gs = return ((sceneUpdate $ unScene gs) dt gs)

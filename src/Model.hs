@@ -2,16 +2,27 @@ module Model where
 
 import           Models.PacMan
 import           Models.Ghost
+import           Graphics
+import           Graphics.Gloss
+import           Graphics.Gloss.Interface.IO.Game
 
 data GameState = GameState {
     unScene :: Scene,
     unLevel :: Grid,
     unPacMan :: PacMan,
     unGhosts :: [Ghost]
-} deriving (Show)
+}
 
-data Scene = Play | Pause | Home | GameOver
+data SceneType = Play | Pause | Home | GameOver
   deriving(Eq, Show)
+
+data Scene = Scene {
+  sceneType :: SceneType,
+  sceneDraw :: Textures -> GameState -> Picture,
+  sceneInput :: Event -> GameState -> GameState,
+  sceneUpdate :: Float -> GameState -> GameState
+}
+
 
 data Grid = Grid {
   getGridItems :: [[GridItem]],

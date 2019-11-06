@@ -24,10 +24,10 @@ executable pac-man
                        Models.Ghost
                        Models.Level
                        Graphics
-                       View
                        Utils.Collectible
                        Utils.Path
                        Controllers.Animator
+                       Controllers.SceneController
   -- other-extensions:
   build-depends:       base >= 4 && < 5,
                        gloss,
