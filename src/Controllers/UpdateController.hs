@@ -20,6 +20,7 @@ performUpdate dt gs =
   gu  = updateAnimation dt . performGhostUpdate (canPass . get) (unPath pm) dt
   checkGameOver gs1
     | null (getAvailableCollectibles gs1) = gs1 { unScene = getScene GameOver }
+    | unLives (unPacMan gs1) == 0         = gs1 { unScene = getScene GameOver }
     | otherwise                           = gs1
 
 updateBase _ gs = gs
