@@ -38,4 +38,10 @@ instance Animatable Ghost where
             , unGhostState     = Edible (nextAnimStage stage)
             }
         | otherwise = g { unGhostAnimTimer = unGhostAnimTimer g + secs }
+    updateAnimation secs g@(Ghost _ _ (Normal stage) _ _)
+        | unGhostAnimTimer g + secs > ghostAnimationUpdateTime = g
+            { unGhostAnimTimer = 0
+            , unGhostState     = Normal (nextAnimStage stage)
+            }
+        | otherwise = g { unGhostAnimTimer = unGhostAnimTimer g + secs }
     updateAnimation secs g = g { unGhostAnimTimer = unGhostAnimTimer g + secs }
