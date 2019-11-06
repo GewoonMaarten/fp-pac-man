@@ -3,7 +3,7 @@ cabal-version:       2.4
 -- init'.  For further documentation, see
 -- http://haskell.org/cabal/users-guide/
 
-name:                pac-man
+name:                PacMan
 version:             0.1.0.0
 -- synopsis:
 -- description:
@@ -16,7 +16,7 @@ maintainer:          m.f.deklerk@students.uu.nl
 category:            Game
 extra-source-files:  CHANGELOG.md, README.md
 data-files:          assets/*.bmp
-executable pac-man
+executable PacMan
   main-is:            Main.hs
   other-modules:      Controllers.Animator
                       Controllers.DrawController
@@ -30,6 +30,7 @@ executable pac-man
                       Utils.Collectible
                       Utils.Graphics
                       Utils.Path
+                      Paths_PacMan
   -- other-extensions:
   build-depends:      base >= 4 && < 5,
                       gloss,
