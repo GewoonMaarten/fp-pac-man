@@ -19,18 +19,17 @@ data-files:          assets/*.bmp
 executable PacMan
   main-is:            Main.hs
   other-modules:      Controllers.Animator
-                      Controllers.DrawController
-                      Controllers.KeyController
-                      Controllers.SceneController
-                      Controllers.UpdateController
+                      Controllers.Draw
+                      Controllers.Input
+                      Controllers.Update
                       Model
                       Models.Ghost
                       Models.Level
                       Models.PacMan
+                      Paths_PacMan
                       Utils.Collectible
                       Utils.Graphics
                       Utils.Path
-                      Paths_PacMan
   -- other-extensions:
   build-depends:      base >= 4 && < 5,
                       gloss,

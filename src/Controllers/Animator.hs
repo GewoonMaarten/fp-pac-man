@@ -4,8 +4,8 @@ module Controllers.Animator
 where
 
 import           Model
-import           Models.PacMan
 import           Models.Ghost
+import           Models.PacMan
 
 nextAnimStage :: (Bounded a, Enum a) => a -> a
 nextAnimStage s | fromEnum s + 1 > fromEnum (getMaxBound s) = toEnum 0

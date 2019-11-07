@@ -4,8 +4,9 @@ import           Model
 import           Models.PacMan
 import           Models.Ghost
 import           Controllers.Animator
-import           Controllers.KeyController
-import           Controllers.SceneController
+import           Controllers.Input              ( inputHandler )
+import           Controllers.Draw               ( drawScene )
+import           Controllers.Update             ( updateScene )
 import           Utils.Collectible
 import           Utils.Path
 import           Utils.Graphics
@@ -24,15 +25,15 @@ main = playIO (InWindow "Pac-Man" (400, 700) (10, 10)) -- Display mode
               update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
-intialGameState = GameState (getScene Home) (Grid [] 0 0 0) initialPacMan []
+intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan []
 
 draw :: GameState -> IO Picture
 draw gs = do
     textures <- loadTextures
-    return ((sceneDraw $ unScene gs) textures gs)
+    return (drawScene (unScene gs) textures gs)
 
 input :: Event -> GameState -> IO GameState
-input event gs = return ((sceneInput $ unScene gs) event gs)
+input event gs = return (inputHandler (unScene gs) event gs)
 
 update :: Float -> GameState -> IO GameState
-update dt gs = return ((sceneUpdate $ unScene gs) dt gs)
+update dt gs = return (updateScene (unScene gs) dt gs)

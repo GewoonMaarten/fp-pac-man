@@ -13,16 +13,8 @@ data GameState = GameState {
     unGhosts :: [Ghost]
 }
 
-data SceneType = Play | Pause | Home | GameOver
+data Scene = Play | Pause | Home | GameOver
   deriving(Eq, Show)
-
-data Scene = Scene {
-  sceneType :: SceneType,
-  sceneDraw :: Textures -> GameState -> Picture,
-  sceneInput :: Event -> GameState -> GameState,
-  sceneUpdate :: Float -> GameState -> GameState
-}
-
 
 data Grid = Grid {
   getGridItems :: [[GridItem]],
