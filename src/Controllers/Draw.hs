@@ -14,6 +14,9 @@ import           Models.PacMan
 import           Utils.Graphics
 
 drawScene :: Scene -> Textures -> GameState -> Picture
+--------------------------------------------------------------------------------
+-- Scene: Play
+--------------------------------------------------------------------------------
 drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
   pictures
     $  showGrid (unLevel gameState)
@@ -22,6 +25,9 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
        , showScore $ unPacMan gameState
        , showLives ts $ unPacMan gameState
        ]
+--------------------------------------------------------------------------------
+-- Scene: Home
+--------------------------------------------------------------------------------
 drawScene Home ts _ = pictures [banner, menuText, startText, quitText]
  where
   banner = translate 0 150 $ scale 0.4 0.4 $ textureBanner ts
@@ -30,5 +36,11 @@ drawScene Home ts _ = pictures [banner, menuText, startText, quitText]
   startText = translate (-50) 0 $ color white $ scale 0.2 0.2 $ text "> Start"
   quitText =
     translate (-50) (-35) $ color white $ scale 0.2 0.2 $ text "  Quit"
-drawScene Pause    _ gs = text "Pause"
-drawScene GameOver _ gs = text "GameOver"
+--------------------------------------------------------------------------------
+-- Scene: Pause
+--------------------------------------------------------------------------------
+drawScene Pause    _ _ = text "Pause"
+--------------------------------------------------------------------------------
+-- Scene: GameOver
+--------------------------------------------------------------------------------
+drawScene GameOver _ _ = text "GameOver"
