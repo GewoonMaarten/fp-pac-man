@@ -29,4 +29,4 @@ txtsToPic initX initY = pictures . foldl (flip f) []
     translate x (y - 20) (txtToPic txt) : acc
 
 floatLeft :: Float -> Float
-floatLeft = (+) (-(fromIntegral screenWidth / 2))
+floatLeft = (+) (-(fromIntegral windowWidth / 2))

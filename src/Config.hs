@@ -1,8 +1,8 @@
 module Config where
 
-screenWidth, screenHeight :: Int
-screenWidth = 400
-screenHeight = 700
+windowWidth, windowHeight :: Int
+windowWidth = 400
+windowHeight = 700
 
 
 gridX, gridY, gridSize :: Float

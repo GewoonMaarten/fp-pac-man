@@ -17,7 +17,7 @@ import           Graphics.Gloss.Interface.IO.Game
 
 
 main :: IO ()
-main = playIO (InWindow "Pac-Man" (screenWidth, screenHeight) (10, 10)) -- Display mode
+main = playIO (InWindow "Pac-Man" (windowWidth, windowHeight) (10, 10)) -- Display mode
               black -- Background Color
               30 -- Number of steps per second
               intialGameState -- Initial world
