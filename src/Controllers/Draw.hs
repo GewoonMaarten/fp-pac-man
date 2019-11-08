@@ -44,6 +44,14 @@ drawScene Home ts _ = pictures [banner, txts]
     [ ("Menu"                    , Medium)
     , ("Press \"Enter\" to start", Small)
     , ("Press \"Esc\" to quit"   , Small)
+    , (""                        , Small)
+    , (""                        , Small)
+    , (""                        , Small)
+    , (""                        , Small)
+    , ("By Tom de Goede"         , Smallest)
+    , ("and Maarten de Klerk"    , Smallest)
+    , (""                        , Small)
+    , ("Version 1, 2019"         , Smallest)
     ]
 --------------------------------------------------------------------------------
 -- Scene: Pause
