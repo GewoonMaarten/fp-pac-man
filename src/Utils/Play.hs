@@ -18,6 +18,7 @@ initialPlay gameState = gameState
                , initialGhost Pinky
                , initialGhost Clyde
                ]
+  , unPacMan = initialPacMan
   }
 
 resetPlay :: GameState -> GameState

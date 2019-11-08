@@ -19,6 +19,7 @@ inputHandler :: Scene -> Event -> GameState -> GameState
 --------------------------------------------------------------------------------
 inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
   initialPlay gameState
+inputHandler Home (EventKey (SpecialKey KeyEsc) Up _ _) gameState = gameState
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------

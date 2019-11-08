@@ -35,11 +35,20 @@ drawScene Home ts _ = pictures [banner, txts]
   txts   = txtsToPic
     (floatLeft 40)
     0
-    [("Start Menu", Medium), ("> Start", Small), ("Quit", Small)]
+    [ ("Start Menu"              , Medium)
+    , ("Press \"Enter\" to start", Small)
+    , ("Press \"Esc\" to quit"   , Small)
+    ]
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
-drawScene Pause    _ _ = translate 0 0 $ color white $ text "Pause"
+drawScene Pause _ _ = txtsToPic
+  (floatLeft 40)
+  0
+  [ ("Pause"                   , Large)
+  , ("Press \"Esc\" to unpause", Small)
+  , ("Press \"Enter\" to quit" , Small)
+  ]
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
