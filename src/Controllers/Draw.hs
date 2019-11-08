@@ -39,8 +39,8 @@ drawScene Home ts _ = pictures [banner, menuText, startText, quitText]
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
-drawScene Pause    _ _ = text "Pause"
+drawScene Pause    _ _ = translate 0 0 $ color white $ text "Pause"
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-drawScene GameOver _ _ = text "GameOver"
+drawScene GameOver _ _ = translate 0 0 $ color white $ text "GameOver"
