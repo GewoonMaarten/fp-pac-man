@@ -25,6 +25,12 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
     ++ [ showPacMan pt $ unPacMan gameState
        , showScore $ unPacMan gameState
        , showLives ts $ unPacMan gameState
+       , txtsToPic
+         (floatLeft 20)
+         (-240)
+         [ ("Use the arrow keys to move around", Smallest)
+         , ("Press \"Esc\" to pause"           , Smallest)
+         ]
        ]
 --------------------------------------------------------------------------------
 -- Scene: Home
@@ -35,7 +41,7 @@ drawScene Home ts _ = pictures [banner, txts]
   txts   = txtsToPic
     (floatLeft 40)
     0
-    [ ("Start Menu"              , Medium)
+    [ ("Menu"                    , Medium)
     , ("Press \"Enter\" to start", Small)
     , ("Press \"Esc\" to quit"   , Small)
     ]
@@ -45,11 +51,21 @@ drawScene Home ts _ = pictures [banner, txts]
 drawScene Pause _ _ = txtsToPic
   (floatLeft 40)
   0
-  [ ("Pause"                   , Large)
-  , ("Press \"Esc\" to unpause", Small)
-  , ("Press \"Enter\" to quit" , Small)
+  [ ("Pause"                        , Large)
+  , ("Press \"Esc\" to unpause"     , Smallest)
+  , ("Press \"Enter\" to go to menu", Smallest)
   ]
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-drawScene GameOver _ _ = translate 0 0 $ color white $ text "GameOver"
+drawScene GameOver _ gameState =
+  let pacMan      = unPacMan gameState
+      gameOverStr = if unLives pacMan == 0 then "Game Over" else "You Win!"
+  in  txtsToPic
+        (floatLeft 40)
+        0
+        [ (gameOverStr                    , Medium)
+        , ("Your score: " ++ show (unScore pacMan), Small)
+        , (""                             , Small)
+        , ("Press \"Enter\" to go to menu", Smallest)
+        ]
