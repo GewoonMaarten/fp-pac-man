@@ -17,7 +17,7 @@ import           Debug.Trace
 ghostEdibleTimer = 10
 
 collectItems :: GameState -> GameState
-collectItems gs@(GameState { unLevel = Grid { getGridItems = [] } }) = gs
+collectItems gs@GameState { unLevel = Grid { getGridItems = [] } } = gs
 collectItems gs =
   let p                   = unPacMan gs
       score               = unScore p

@@ -20,7 +20,7 @@ class Animatable a where
 animationUpdateTime = 0.1
 
 instance Animatable PacMan where
-    updateAnimation secs p@(PacMan _ _ _ (Just (Movement dir stage)) _)
+    updateAnimation secs p@(PacMan _ _ _ (Just (Movement dir stage)) _ _)
         | unAnimTimer p + secs > animationUpdateTime = p
             { unAnimTimer = 0
             , unMovement  = Just (Movement dir (nextAnimStage stage))

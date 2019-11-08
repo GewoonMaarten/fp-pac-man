@@ -1,5 +1,6 @@
 module Models.PacMan where
 
+import           Models.Ghost
 import           Config
 import           Graphics.Gloss          hiding ( Path )
 import           Graphics.Gloss.Data.Vector
@@ -13,7 +14,8 @@ data PacMan = PacMan {
     unScore :: Int,
     unLives :: Int,
     unMovement :: Maybe Movement,
-    unAnimTimer :: Float
+    unAnimTimer :: Float,
+    unInvincibleTimer :: Float
 } deriving (Show)
 
 data Movement = Movement {
@@ -26,33 +28,54 @@ data Direction = MoveUp | MoveDown | MoveLeft | MoveRight
 data AnimStage = POne | PTwo | PThree | PFour
   deriving (Show, Eq, Enum, Bounded)
 
+spawnPoint :: Path
+spawnPoint = P [(9, 15)] 1
+
 initialPacMan :: PacMan
-initialPacMan = PacMan (P [(9, 7)] 1) -- Path
+initialPacMan = PacMan spawnPoint -- Path
                        0 -- Score
                        3 -- Lifes
                        (Just (Movement MoveLeft PThree)) -- Movement
                        0 -- Animation timer
+                       0 -- Invincible Timer
 
-performPacManUpdate :: Float -> PacMan -> PacMan
-performPacManUpdate dt pm = pm { unPath     = path
-                               , unMovement = mv (unMovement pm)
-                               }
+performPacManUpdate :: Float -> PacMan -> [Ghost] -> PacMan
+performPacManUpdate dt pm gs = pm
+  { unPath            = if checkTouch then spawnPoint else path
+  , unMovement        = mv (unMovement pm)
+  , unLives           = if checkTouch then lives - 1 else lives
+  , unInvincibleTimer = if checkTouch then 10 else 0
+  }
  where
+  lives = unLives pm
+  path :: Path
   path = movePath (dt * 4) (unPath pm)
+  mv :: Maybe Movement -> Maybe Movement
   mv (Just movement) =
     Just $ movement { unDirection = upd path $ unDirection movement }
   mv Nothing = Nothing
+  upd :: Path -> Direction -> Direction
   upd (P [_        ] _) d = d
   upd (P (a : b : _) _) d = dir d a b
+  dir :: (Eq a, Ord a) => Direction -> (a, a) -> (a, a) -> Direction
   dir d (x1, y1) (x2, y2) | x1 < x2   = MoveRight
                           | x1 > x2   = MoveLeft
                           | y1 < y2   = MoveDown
                           | y1 > y2   = MoveUp
                           | otherwise = d
+  checkTouch :: Bool
+  checkTouch =
+    let (px, py)  = actualLocation (unPath pm)
+        ghostsPos = map (actualLocation . unPathG) gs
+    in  unInvincibleTimer pm
+          <= 0
+          && any (\(gx, gy) -> floor gx == floor px && floor gy == floor py)
+                 ghostsPos
 
 showPacMan :: TextureSet -> PacMan -> Picture
-showPacMan ts pm@(PacMan _ _ _ movement _) =
-  let (x, y) = getLoc pm
+showPacMan ts pm =
+  let (x, y)   = getLoc pm
+      movement = unMovement pm
   in  translate x (-y) $ case movement of
         Just (Movement dir stage) ->
           pacmManRotate dir $ pacManScale $ getTexture ts stage
@@ -64,7 +87,7 @@ showPacMan ts pm@(PacMan _ _ _ movement _) =
   getTexture (PacManTextureSet _ _ p _) PThree = p
   getTexture (PacManTextureSet _ _ _ p) PFour  = p
   getLoc :: PacMan -> (Float, Float)
-  getLoc pm = ((gridX, -gridY) Pt.+ gridSize Pt.* (actualLocation $ unPath pm))
+  getLoc pm = (gridX, -gridY) Pt.+ gridSize Pt.* actualLocation (unPath pm)
   pacManScale :: Picture -> Picture
   pacManScale = let s = 0.6 in scale s s
   pacmManRotate :: Direction -> Picture -> Picture
