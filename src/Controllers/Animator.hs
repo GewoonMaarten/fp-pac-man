@@ -20,7 +20,7 @@ class Animatable a where
 animationUpdateTime = 0.1
 
 instance Animatable PacMan where
-    updateAnimation secs p@(PacMan _ _ _ (Just (Movement dir stage)) _ _)
+    updateAnimation secs p@(PacMan _ _ _ (Just (Movement dir stage)) _ it)
         | unAnimTimer p + secs > animationUpdateTime = p
             { unAnimTimer = 0
             , unMovement  = Just (Movement dir (nextAnimStage stage))
@@ -32,13 +32,13 @@ instance Animatable PacMan where
 ghostAnimationUpdateTime = 0.4
 ghostAnimationUpdateTimeFast = 0.2
 instance Animatable Ghost where
-    updateAnimation secs g@(Ghost _ _ (Edible stage) _ _)
+    updateAnimation secs g@(Ghost _ _ (Edible stage) _ _ _)
         | unGhostAnimTimer g + secs > ghostAnimationUpdateTime = g
             { unGhostAnimTimer = 0
             , unGhostState     = Edible (nextAnimStage stage)
             }
         | otherwise = g { unGhostAnimTimer = unGhostAnimTimer g + secs }
-    updateAnimation secs g@(Ghost _ _ (Normal stage) _ _)
+    updateAnimation secs g@(Ghost _ _ (Normal stage) _ _ _)
         | unGhostAnimTimer g + secs > ghostAnimationUpdateTime = g
             { unGhostAnimTimer = 0
             , unGhostState     = Normal (nextAnimStage stage)

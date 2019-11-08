@@ -19,13 +19,15 @@ data Ghost = Ghost {
     unType :: GhostType,
     unGhostState :: GhostState,
     unGhostAnimTimer :: Float,
-    unGhostEdibleTimer :: Float
+    unGhostEdibleTimer :: Float,
+    unIsReleased :: Bool
 } deriving (Show)
 
-initialGhost Blinky = Ghost (P [(9, 7), (12, 7)] 6) Blinky (Normal GOne) 0 0
-initialGhost Inky   = Ghost (P [(9, 9)] 1) Inky (Normal GOne) 0 0
-initialGhost Pinky  = Ghost (P [(8, 9)] 1) Pinky (Normal GOne) 0 0
-initialGhost Clyde  = Ghost (P [(10, 9)] 1) Clyde (Normal GOne) 0 0
+initialGhost Blinky =
+  Ghost (P [(9, 7), (12, 7)] 6) Blinky (Normal GOne) 0 0 True
+initialGhost Inky  = Ghost (P [(9, 9)] 1) Inky (Normal GOne) 0 0 False
+initialGhost Pinky = Ghost (P [(8, 9)] 1) Pinky (Normal GOne) 0 0 False
+initialGhost Clyde = Ghost (P [(10, 9)] 1) Clyde (Normal GOne) 0 0 False
 
 performGhostUpdate canPass pmPath dt g = g
   { unPathG = movePath' (ghostFn canPass pickFn) (dt * 4) (unPathG g)
@@ -43,19 +45,17 @@ getPos :: Path -> (Float, Float)
 getPos p = (gridX, -gridY) Pt.+ gridSize Pt.* actualLocation p
 
 drawGhost :: Ghost -> Textures -> Picture
-drawGhost g@(Ghost p gt (Normal stage) _ _) ts =
-  case find (\v -> fromEnum gt == fst v) (texturesGhost ts) of
+drawGhost g ts = case unGhostState g of
+  Normal stage -> n stage
+  Edible stage -> a stage
+ where
+  (x, y) = getPos (unPathG g)
+  s      = 0.6
+  getTexture GOne (GhostTextureSet p1 _ ) = p1
+  getTexture GTwo (GhostTextureSet _  p1) = p1
+  t = unType g
+  n stage = case find (\v -> fromEnum t == fst v) (texturesGhost ts) of
     Just a  -> translate x (-y) $ scale s s (getTexture stage (snd a))
     Nothing -> blank
- where
-  getTexture GOne (GhostTextureSet p1 _ ) = p1
-  getTexture GTwo (GhostTextureSet _  p1) = p1
-  s      = 0.6
-  (x, y) = getPos p
-drawGhost g@(Ghost p _ (Edible stage) _ _) ts = translate x (-y)
-  $ scale s s (getTexture stage (texturesGhostAfraid ts))
- where
-  (x, y) = getPos p
-  s      = 0.6
-  getTexture GOne (GhostTextureSet p1 _ ) = p1
-  getTexture GTwo (GhostTextureSet _  p1) = p1
+  a stage =
+    translate x (-y) $ scale s s (getTexture stage (texturesGhostAfraid ts))

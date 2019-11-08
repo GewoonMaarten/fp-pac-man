@@ -56,35 +56,34 @@ getAvailableCollectibles gs =
 isToggled :: GameState -> Bool
 isToggled gs = any checkEdible $ unGhosts gs
  where
-  checkEdible (Ghost _ _ (Edible _) _ _) = True
-  checkEdible _                          = False
+  checkEdible (Ghost _ _ (Edible _) _ _ _) = True
+  checkEdible _                            = False
+
 toggleEnergizer :: GameState -> GameState
 toggleEnergizer gs | isToggled gs = removeEnergizer gs
                    | otherwise    = applyEnergizer gs
  where
   applyEnergizer, removeEnergizer :: GameState -> GameState
-  applyEnergizer  = changeGhostState (Edible GOne)
-  removeEnergizer = changeGhostState (Normal GOne)
-  changeGhostState :: GhostState -> GameState -> GameState
-  changeGhostState _   gs@GameState { unGhosts = [] } = gs
-  changeGhostState gst gs                             = gs
-    { unGhosts = map
-                     (\ghost -> ghost
-                       { unGhostState       = gst
-                       , unGhostEdibleTimer = case gst of
-                                                Edible _ ->
-                                                  unGhostEdibleTimer ghost + 10
-                                                Normal _ -> 0
-                       }
-                     )
-                   $ unGhosts gs
-    }
-
+  applyEnergizer  = changeGhostsState (Edible GOne)
+  removeEnergizer = changeGhostsState (Normal GOne)
+  changeGhostsState :: GhostState -> GameState -> GameState
+  changeGhostsState _ gs@GameState { unGhosts = [] } = gs
+  changeGhostsState gst gs =
+    gs { unGhosts = map (changeGhostState gst) $ unGhosts gs }
+  changeGhostState gst g
+    | unIsReleased g = g
+      { unGhostState       = gst
+      , unGhostEdibleTimer = case gst of
+                               Edible _ -> unGhostEdibleTimer g + 10
+                               Normal _ -> 0
+      }
+    | otherwise = g
+    
 updateEnergizerTimers :: Float -> GameState -> GameState
 updateEnergizerTimers secs gs =
   let ghosts = unGhosts gs in gs { unGhosts = map updateEngerizerTimer ghosts }
  where
-  updateEngerizerTimer g@(Ghost _ _ (Edible _) _ timer)
+  updateEngerizerTimer g@(Ghost _ _ (Edible _) _ timer _)
     | timer - secs > 0 = g { unGhostEdibleTimer = timer - secs }
     | otherwise = g { unGhostEdibleTimer = 0, unGhostState = Normal GOne }
   updateEngerizerTimer g = g { unGhostEdibleTimer = 0 }

@@ -8,7 +8,7 @@ import qualified Graphics.Gloss.Data.Point.Arithmetic
                                                as Pt
 import           Utils.Path
 import           Utils.Graphics
-
+import           Data.Fixed                     ( mod' )
 data PacMan = PacMan {
     unPath :: Path,
     unScore :: Int,
@@ -38,11 +38,16 @@ initialPacMan = PacMan spawnPoint -- Path
                        (Just (Movement MoveLeft PThree)) -- Movement
                        0 -- Animation timer
                        0 -- Invincible Timer
-updatePacMan :: Float -> PacMan -> [Ghost] -> PacMan
-updatePacMan = (updateLives .) . updateMovement
+
+updatePacMan :: Float -> PacMan -> PacMan
+updatePacMan = updateMovement
 
 updateMovement :: Float -> PacMan -> PacMan
-updateMovement dt pm = pm { unPath = path, unMovement = mv (unMovement pm) }
+updateMovement dt pm = pm
+  { unPath            = path
+  , unMovement        = mv (unMovement pm)
+  , unInvincibleTimer = updateInvincibleTimer dt (unInvincibleTimer pm)
+  }
  where
   path :: Path
   path = movePath (dt * 4) (unPath pm)
@@ -60,31 +65,23 @@ updateMovement dt pm = pm { unPath = path, unMovement = mv (unMovement pm) }
                           | y1 > y2   = MoveUp
                           | otherwise = d
 
+updateInvincibleTimer :: Float -> Float -> Float
+updateInvincibleTimer dt secs | secs - dt <= 0 = 0
+                              | otherwise      = secs - dt
+
 updateLives :: PacMan -> [Ghost] -> PacMan
 updateLives pm gs =
   let lives = unLives pm
-  in  pm { unLives = if checkTouch pm gs then lives - 1 else lives
-         , unInvincibleTimer = if checkTouch pm gs then 10 else 0
-         , unPath = if checkTouch pm gs then spawnPoint else unPath pm
-         }
-
-checkTouch :: PacMan -> [Ghost] -> Bool
-checkTouch pm gs =
-  let (px, py)  = actualLocation (unPath pm)
-      ghostsPos = map (actualLocation . unPathG) gs
-  in  unInvincibleTimer pm
-        <= 0
-        && any (\(gx, gy) -> floor gx == floor px && floor gy == floor py)
-               ghostsPos
+  in  pm { unLives = lives - 1, unInvincibleTimer = 5, unPath = spawnPoint }
 
 showPacMan :: TextureSet -> PacMan -> Picture
-showPacMan ts pm =
-  let (x, y)   = getLoc pm
-      movement = unMovement pm
-  in  translate x (-y) $ case movement of
-        Just (Movement dir stage) ->
-          pacmManRotate dir $ pacManScale $ getTexture ts stage
-        Nothing -> pacManScale $ getTexture ts PThree
+showPacMan ts pm = let (x, y)   = getLoc pm
+                       movement = unMovement pm
+    in  translate x (-y) $ case movement of
+          Just (Movement dir stage) ->
+            pacmManRotate dir $ pacManScale $ getTexture ts stage
+          Nothing -> pacManScale $ getTexture ts PThree
+
  where
   getTexture :: TextureSet -> AnimStage -> Picture
   getTexture (PacManTextureSet p _ _ _) POne   = p
