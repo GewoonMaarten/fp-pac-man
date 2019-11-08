@@ -30,6 +30,7 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
          (-240)
          [ ("Use the arrow keys to move around", Smallest)
          , ("Press \"Space\" to pause"         , Smallest)
+         , ("Press \"Esc\" to quit"            , Smallest)
          ]
        ]
 --------------------------------------------------------------------------------
@@ -60,8 +61,10 @@ drawScene Pause _ _ = txtsToPic
   (floatLeft 40)
   0
   [ ("Pause"                        , Large)
+  , (""                             , Small)
   , ("Press \"Space\" to unpause"   , Smallest)
   , ("Press \"Enter\" to go to menu", Smallest)
+  , ("Press \"Esc\" to quit"        , Smallest)
   ]
 --------------------------------------------------------------------------------
 -- Scene: GameOver
@@ -76,4 +79,5 @@ drawScene GameOver _ gameState =
         , ("Your score: " ++ show (unScore pacMan), Small)
         , (""                             , Small)
         , ("Press \"Enter\" to go to menu", Smallest)
+        , ("Press \"Esc\" to quit"        , Smallest)
         ]
