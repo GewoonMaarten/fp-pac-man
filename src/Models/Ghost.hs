@@ -22,10 +22,10 @@ data Ghost = Ghost {
     unGhostEdibleTimer :: Float
 } deriving (Show)
 
-initialGhost Blinky = Ghost (P [(6, 7), (12, 7)] 6) Blinky (Normal GOne) 0 0
-initialGhost Inky   = Ghost (P [(6, 11), (6, 7)] 4) Inky (Normal GOne) 0 0
-initialGhost Pinky  = Ghost (P [(12, 7), (12, 11)] 4) Pinky (Normal GOne) 0 0
-initialGhost Clyde  = Ghost (P [(12, 11), (6, 11)] 6) Clyde (Normal GOne) 0 0
+initialGhost Blinky = Ghost (P [(9, 7), (12, 7)] 6) Blinky (Normal GOne) 0 0
+initialGhost Inky   = Ghost (P [(9, 9)] 1) Inky (Normal GOne) 0 0
+initialGhost Pinky  = Ghost (P [(8, 9)] 1) Pinky (Normal GOne) 0 0
+initialGhost Clyde  = Ghost (P [(10, 9)] 1) Clyde (Normal GOne) 0 0
 
 performGhostUpdate canPass pmPath dt g = g
   { unPathG = movePath' (ghostFn canPass pickFn) (dt * 4) (unPathG g)
@@ -40,7 +40,7 @@ performGhostUpdate canPass pmPath dt g = g
   pick Clyde  l ds = bestDirection l ds (destination pmPath)
 
 getPos :: Path -> (Float, Float)
-getPos p = ((gridX, -gridY) Pt.+ gridSize Pt.* (actualLocation p))
+getPos p = (gridX, -gridY) Pt.+ gridSize Pt.* actualLocation p
 
 drawGhost :: Ghost -> Textures -> Picture
 drawGhost g@(Ghost p gt (Normal stage) _ _) ts =
