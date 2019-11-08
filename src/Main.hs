@@ -14,16 +14,25 @@ import           Utils.Graphics
 
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
-
+import           Graphics.Gloss.Interface.Environment
 
 main :: IO ()
-main = playIO (InWindow "Pac-Man" (windowWidth, windowHeight) (10, 10)) -- Display mode
-              black -- Background Color
-              30 -- Number of steps per second
-              intialGameState -- Initial world
-              draw -- (world -> IO Picture)
-              input -- (Event -> world -> IO world)
-              update -- (Float -> world -> IO world)
+main = do
+    (screenWidth, screenHeight) <- getScreenSize
+    playIO
+        (InWindow
+            "Pac-Man"
+            (windowWidth, windowHeight)
+            ( (screenWidth `div` 2) - (windowWidth `div` 2)
+            , (screenHeight `div` 2) - (windowHeight `div` 2)
+            )
+        ) -- Display mode
+        black -- Background Color
+        30 -- Number of steps per second
+        intialGameState -- Initial world
+        draw -- (world -> IO Picture)
+        input -- (Event -> world -> IO world)
+        update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
 intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan []

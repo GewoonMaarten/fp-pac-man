@@ -32,6 +32,7 @@ executable PacMan
                       Utils.Graphics
                       Utils.Path
                       Utils.Play
+                      Utils.Text
   -- other-extensions:
   build-depends:      base >= 4 && < 5,
                       gloss,
