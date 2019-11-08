@@ -29,7 +29,7 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
          (floatLeft 20)
          (-240)
          [ ("Use the arrow keys to move around", Smallest)
-         , ("Press \"Esc\" to pause"           , Smallest)
+         , ("Press \"Space\" to pause"         , Smallest)
          ]
        ]
 --------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ drawScene Pause _ _ = txtsToPic
   (floatLeft 40)
   0
   [ ("Pause"                        , Large)
-  , ("Press \"Esc\" to unpause"     , Smallest)
+  , ("Press \"Space\" to unpause"   , Smallest)
   , ("Press \"Enter\" to go to menu", Smallest)
   ]
 --------------------------------------------------------------------------------

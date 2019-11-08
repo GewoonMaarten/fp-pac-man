@@ -19,7 +19,6 @@ inputHandler :: Scene -> Event -> GameState -> GameState
 --------------------------------------------------------------------------------
 inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
   initialPlay gameState
-inputHandler Home (EventKey (SpecialKey KeyEsc) Up _ _) gameState = gameState
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------
@@ -34,14 +33,14 @@ inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState =
 -- Down Key
 inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState =
   moveFn (\(x, y) -> (x, y + 1)) gameState
-inputHandler Play (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeySpace) Up _ _) gameState =
   gameState { unScene = Pause }
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
 inputHandler Pause (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
   gameState { unScene = Home }
-inputHandler Pause (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
+inputHandler Pause (EventKey (SpecialKey KeySpace) Up _ _) gameState =
   gameState { unScene = Play }
 --------------------------------------------------------------------------------
 -- Scene: GameOver

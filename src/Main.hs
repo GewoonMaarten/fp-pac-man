@@ -15,7 +15,7 @@ import           Utils.Graphics
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 import           Graphics.Gloss.Interface.Environment
-
+import           System.Exit
 main :: IO ()
 main = do
     (screenWidth, screenHeight) <- getScreenSize
@@ -43,6 +43,7 @@ draw gs = do
     return (drawScene (unScene gs) textures gs)
 
 input :: Event -> GameState -> IO GameState
+input (EventKey (SpecialKey KeyEsc) Up _ _) _ = exitSuccess
 input event gs = return (inputHandler (unScene gs) event gs)
 
 update :: Float -> GameState -> IO GameState
