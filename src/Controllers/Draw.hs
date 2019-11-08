@@ -12,6 +12,7 @@ import           Models.Ghost
 import           Models.Level
 import           Models.PacMan
 import           Utils.Graphics
+import           Utils.Text
 
 drawScene :: Scene -> Textures -> GameState -> Picture
 --------------------------------------------------------------------------------
@@ -28,14 +29,13 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
-drawScene Home ts _ = pictures [banner, menuText, startText, quitText]
+drawScene Home ts _ = pictures [banner, txts]
  where
   banner = translate 0 150 $ scale 0.4 0.4 $ textureBanner ts
-  menuText =
-    translate (-120) 50 $ color white $ scale 0.35 0.35 $ text "Start Menu"
-  startText = translate (-50) 0 $ color white $ scale 0.2 0.2 $ text "> Start"
-  quitText =
-    translate (-50) (-35) $ color white $ scale 0.2 0.2 $ text "  Quit"
+  txts   = txtsToPic
+    (floatLeft 40)
+    0
+    [("Start Menu", Medium), ("> Start", Small), ("Quit", Small)]
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
