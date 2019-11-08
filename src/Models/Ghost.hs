@@ -1,5 +1,6 @@
 module Models.Ghost where
 
+import           Config
 import           Graphics.Gloss          hiding ( Path )
 import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic
@@ -39,7 +40,7 @@ performGhostUpdate canPass pmPath dt g = g
   pick Clyde  l ds = bestDirection l ds (destination pmPath)
 
 getPos :: Path -> (Float, Float)
-getPos p = ((-180, -255) Pt.+ 20 Pt.* (actualLocation p))
+getPos p = ((gridX, -gridY) Pt.+ gridSize Pt.* (actualLocation p))
 
 drawGhost :: Ghost -> Textures -> Picture
 drawGhost g@(Ghost p gt (Normal stage) _ _) ts =

@@ -3,6 +3,7 @@ module Controllers.Input
   )
 where
 
+import           Config
 import           Data.Fixed                     ( mod' )
 import           Graphics.Gloss.Interface.IO.Game
 import           Model
@@ -17,7 +18,7 @@ inputHandler :: Scene -> Event -> GameState -> GameState
 --------------------------------------------------------------------------------
 inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState = gameState
   { unScene  = Play
-  , unLevel  = buildGrid (-180) 255 20
+  , unLevel  = buildGrid gridX gridY gridSize
   , unGhosts = [ initialGhost Blinky
                , initialGhost Inky
                , initialGhost Pinky

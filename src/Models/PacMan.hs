@@ -1,5 +1,6 @@
 module Models.PacMan where
 
+import           Config
 import           Graphics.Gloss          hiding ( Path )
 import           Graphics.Gloss.Data.Vector
 import qualified Graphics.Gloss.Data.Point.Arithmetic
@@ -63,7 +64,7 @@ showPacMan ts pm@(PacMan _ _ _ movement _) =
   getTexture (PacManTextureSet _ _ p _) PThree = p
   getTexture (PacManTextureSet _ _ _ p) PFour  = p
   getLoc :: PacMan -> (Float, Float)
-  getLoc pm = ((-180, -255) Pt.+ 20 Pt.* (actualLocation $ unPath pm))
+  getLoc pm = ((gridX, -gridY) Pt.+ gridSize Pt.* (actualLocation $ unPath pm))
   pacManScale :: Picture -> Picture
   pacManScale = let s = 0.6 in scale s s
   pacmManRotate :: Direction -> Picture -> Picture
