@@ -36,10 +36,10 @@ performGhostUpdate canPass pmPath dt g = g
   pickFn = pick $ unType g
   -- implement different pick behaviours depending on pmPath
   pick :: GhostType -> PathNode -> [PathDirection] -> PathDirection
-  pick Blinky l ds = bestDirection l ds (source pmPath)
-  pick Inky   l ds = bestDirection l ds (source pmPath)
-  pick Pinky  l ds = bestDirection l ds (destination pmPath)
-  pick Clyde  l ds = bestDirection l ds (destination pmPath)
+  pick Blinky l ds = bestDirection l ds (destination pmPath)
+  pick Inky   l ds = bestDirection l ds (destination pmPath)
+  pick Pinky  l ds = bestDirection l ds (source pmPath)
+  pick Clyde  l ds = bestDirection l ds (source pmPath)
 
 getPos :: Path -> (Float, Float)
 getPos p = (gridX, -gridY) Pt.+ gridSize Pt.* actualLocation p

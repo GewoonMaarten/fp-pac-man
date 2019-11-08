@@ -12,30 +12,39 @@ import           Models.PacMan
 import           Model
 import           Utils.Path
 import           Debug.Trace
+import           Data.List
 
 -- Number of seconds a ghost should be edible
 ghostEdibleTimer = 10
 
 collectItems :: GameState -> GameState
 collectItems gs@GameState { unLevel = Grid { getGridItems = [] } } = gs
-collectItems gs =
-  let p                   = unPacMan gs
+collectItems gs = foldr collect gs pmTiles
+ where
+  (px, py) = actualLocation $ unPath (unPacMan gs)
+  floorceil a = nub [floor a, ceiling a]
+  pmTiles = (,) <$> floorceil px <*> floorceil py
+
+  collect :: (Int, Int) -> GameState -> GameState
+  collect (x, y) gs = doToggleEnergizer g $ gs { unLevel  = grid { getGridItems = giss }
+                                          , unPacMan = p { unScore = score + s }
+                                          }
+    where
+      p                   = unPacMan gs
       score               = unScore p
-      (px, py)            = actualLocation $ unPath p
       grid                = unLevel gs
       gridItems           = getGridItems grid
-      (giss1, gi : giss2) = splitAt (floor py) gridItems
-      (gis1 , g : gis2  ) = splitAt (floor px) gi
+      
+      (giss1, gi : giss2) = splitAt y gridItems
+      (gis1 , g : gis2  ) = splitAt x gi
       (g1   , s         ) = pickup g
       gis                 = gis1 ++ g1 : gis2
       giss                = giss1 ++ gis : giss2
-  in  doToggleEnergizer g $ gs { unLevel  = grid { getGridItems = giss }
-                               , unPacMan = p { unScore = score + s }
-                               }
- where
+
   pickup :: GridItem -> (GridItem, Int)
   pickup (Collectible Available t p) = (Collectible Collected t p, p)
   pickup g                           = (g, 0)
+
   doToggleEnergizer :: GridItem -> GameState -> GameState
   doToggleEnergizer (Collectible Available Energizer _) gs
     | isToggled gs = gs
