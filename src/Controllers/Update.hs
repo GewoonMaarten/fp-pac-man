@@ -14,19 +14,23 @@ import           Utils.Path
 import           Data.List                      ( find )
 updateScene :: Scene -> Float -> GameState -> GameState
 updateScene Play dt gs =
-  checkGameOver $ case checkTouch (unPacMan gs) (unGhosts gs) of
-    Just (Ghost _ _ (Edible _) _ _ _) ->
-      gs { unGhosts = map (initialGhost . unType) (unGhosts gs) }
-    Just _ -> gs { unPacMan = updateLives (unPacMan gs) (unGhosts gs)
-                 , unGhosts = map (initialGhost . unType) (unGhosts gs)
+  checkGameOver $ case checkTouch pacMan ghosts of
+    Just (Ghost _ _ (Edible _) _ _ _) -> gs { 
+        unGhosts = map (initialGhost . unType) ghosts, 
+        unPacMan = pacMan { unScore = score + 100 } }
+    Just _ -> gs { unPacMan = updateLives pacMan ghosts
+                 , unGhosts = map (initialGhost . unType) ghosts
                  }
     Nothing -> updateEnergizerTimers dt $ collectItems $ gs
-      { unPacMan = updateAnimation dt $ updatePacMan dt (unPacMan gs)
-      , unGhosts = map gu $ unGhosts gs
+      { unPacMan = updateAnimation dt $ updatePacMan dt pacMan
+      , unGhosts = map gu ghosts
       }
  where
+  pacMan = unPacMan gs
+  ghosts = unGhosts gs
+  score = unScore pacMan
   get = getGridItem $ unLevel gs
-  pm  = updatePacMan dt (unPacMan gs)
+  pm  = updatePacMan dt pacMan
   gu  = updateAnimation dt . performGhostUpdate (canPass . get) (unPath pm) dt
   checkGameOver gs1
     | null (getAvailableCollectibles gs1) = gs1 { unScene = GameOver }
