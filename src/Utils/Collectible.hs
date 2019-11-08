@@ -26,12 +26,8 @@ collectItems gs = foldr collect gs pmTiles
   pmTiles = (,) <$> floorceil px <*> floorceil py
 
   collect :: (Int, Int) -> GameState -> GameState
-  collect (x, y) gs = doToggleEnergizer g $ gs { unLevel  = grid { getGridItems = giss }
-                                          , unPacMan = p { unScore = score + s }
-                                          }
+  collect (x, y) gs = (doToggleEnergizer g . addScore s) $ gs { unLevel = grid { getGridItems = giss } }
     where
-      p                   = unPacMan gs
-      score               = unScore p
       grid                = unLevel gs
       gridItems           = getGridItems grid
       

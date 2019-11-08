@@ -16,6 +16,7 @@ import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 import           Graphics.Gloss.Interface.Environment
 import           System.Exit
+import           System.Random
 main :: IO ()
 main = do
     (screenWidth, screenHeight) <- getScreenSize
@@ -35,7 +36,7 @@ main = do
         update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
-intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan []
+intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [] $ mkStdGen 1
 
 draw :: GameState -> IO Picture
 draw gs = do

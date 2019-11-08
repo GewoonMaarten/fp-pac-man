@@ -34,6 +34,9 @@ source p = head $ unNodes p
 destination (P (_ : b : _) _) = b
 destination p                 = source p
 
+isStationary (P [_] _) = True
+isStationary _         = False
+
 {- MOVE -}
 
 -- concrete default movePath function

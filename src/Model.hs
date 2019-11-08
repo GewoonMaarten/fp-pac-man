@@ -5,13 +5,19 @@ import           Models.Ghost
 import           Utils.Graphics
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
+import           System.Random
 
 data GameState = GameState {
     unScene :: Scene,
     unLevel :: Grid,
     unPacMan :: PacMan,
-    unGhosts :: [Ghost]
+    unGhosts :: [Ghost],
+    unRandom :: StdGen
 }
+
+addScore :: Int -> GameState -> GameState
+addScore s gs = gs { unPacMan = addScoreM $ unPacMan gs }
+  where addScoreM pm = pm { unScore = unScore pm + s }
 
 data Scene = Play | Pause | Home | GameOver
   deriving(Eq, Show)
