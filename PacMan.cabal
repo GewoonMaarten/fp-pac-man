@@ -18,7 +18,8 @@ extra-source-files:  CHANGELOG.md, README.md
 data-files:          assets/*.bmp
 executable PacMan
   main-is:            Main.hs
-  other-modules:      Controllers.Animator
+  other-modules:      Config
+                      Controllers.Animator
                       Controllers.Draw
                       Controllers.Input
                       Controllers.Update
@@ -30,6 +31,7 @@ executable PacMan
                       Utils.Collectible
                       Utils.Graphics
                       Utils.Path
+                      Utils.Play
   -- other-extensions:
   build-depends:      base >= 4 && < 5,
                       gloss,

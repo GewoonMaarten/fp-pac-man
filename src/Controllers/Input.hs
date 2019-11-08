@@ -11,20 +11,14 @@ import           Models.Ghost
 import           Models.Level
 import           Models.PacMan
 import           Utils.Path
+import           Utils.Play
 
 inputHandler :: Scene -> Event -> GameState -> GameState
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
-inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState = gameState
-  { unScene  = Play
-  , unLevel  = buildGrid gridX gridY gridSize
-  , unGhosts = [ initialGhost Blinky
-               , initialGhost Inky
-               , initialGhost Pinky
-               , initialGhost Clyde
-               ]
-  }
+inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
+  initialPlay gameState
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------

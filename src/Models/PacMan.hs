@@ -38,16 +38,12 @@ initialPacMan = PacMan spawnPoint -- Path
                        (Just (Movement MoveLeft PThree)) -- Movement
                        0 -- Animation timer
                        0 -- Invincible Timer
+updatePacMan :: Float -> PacMan -> [Ghost] -> PacMan
+updatePacMan = (updateLives .) . updateMovement
 
-performPacManUpdate :: Float -> PacMan -> [Ghost] -> PacMan
-performPacManUpdate dt pm gs = pm
-  { unPath            = if checkTouch then spawnPoint else path
-  , unMovement        = mv (unMovement pm)
-  , unLives           = if checkTouch then lives - 1 else lives
-  , unInvincibleTimer = if checkTouch then 10 else 0
-  }
+updateMovement :: Float -> PacMan -> PacMan
+updateMovement dt pm = pm { unPath = path, unMovement = mv (unMovement pm) }
  where
-  lives = unLives pm
   path :: Path
   path = movePath (dt * 4) (unPath pm)
   mv :: Maybe Movement -> Maybe Movement
@@ -63,14 +59,23 @@ performPacManUpdate dt pm gs = pm
                           | y1 < y2   = MoveDown
                           | y1 > y2   = MoveUp
                           | otherwise = d
-  checkTouch :: Bool
-  checkTouch =
-    let (px, py)  = actualLocation (unPath pm)
-        ghostsPos = map (actualLocation . unPathG) gs
-    in  unInvincibleTimer pm
-          <= 0
-          && any (\(gx, gy) -> floor gx == floor px && floor gy == floor py)
-                 ghostsPos
+
+updateLives :: PacMan -> [Ghost] -> PacMan
+updateLives pm gs =
+  let lives = unLives pm
+  in  pm { unLives = if checkTouch pm gs then lives - 1 else lives
+         , unInvincibleTimer = if checkTouch pm gs then 10 else 0
+         , unPath = if checkTouch pm gs then spawnPoint else unPath pm
+         }
+
+checkTouch :: PacMan -> [Ghost] -> Bool
+checkTouch pm gs =
+  let (px, py)  = actualLocation (unPath pm)
+      ghostsPos = map (actualLocation . unPathG) gs
+  in  unInvincibleTimer pm
+        <= 0
+        && any (\(gx, gy) -> floor gx == floor px && floor gy == floor py)
+               ghostsPos
 
 showPacMan :: TextureSet -> PacMan -> Picture
 showPacMan ts pm =

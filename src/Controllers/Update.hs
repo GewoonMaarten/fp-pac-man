@@ -16,12 +16,12 @@ updateScene :: Scene -> Float -> GameState -> GameState
 updateScene Play dt gs =
   checkGameOver $ updateEnergizerTimers dt $ collectItems $ gs
     { unPacMan = updateAnimation dt
-                   $ performPacManUpdate dt (unPacMan gs) (unGhosts gs)
+                   $ updatePacMan dt (unPacMan gs) (unGhosts gs)
     , unGhosts = map gu $ unGhosts gs
     }
  where
   get = getGridItem $ unLevel gs
-  pm  = performPacManUpdate dt (unPacMan gs) (unGhosts gs)
+  pm  = updatePacMan dt (unPacMan gs) (unGhosts gs)
   gu  = updateAnimation dt . performGhostUpdate (canPass . get) (unPath pm) dt
   checkGameOver gs1
     | null (getAvailableCollectibles gs1) = gs1 { unScene = GameOver }
