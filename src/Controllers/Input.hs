@@ -22,34 +22,34 @@ inputHandler :: Scene -> Event -> GameState -> IO GameState
 inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState = do
   csvString <- readFile "assets/map.csv"
   return (initialPlay (level csvString) gameState)
-  where
-    level :: String -> [[Int]]
-    level = map (map t . splitOn ",") . lines
-    t :: String -> Int
-    t = read
+ where
+  level :: String -> [[Int]]
+  level = map (map t . splitOn ",") . lines
+  t :: String -> Int
+  t = read
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------
-inputHandler Play (EventKey (SpecialKey KeyLeft) _ _ _) gameState = return $
-  moveFn (\(x, y) -> (x - 1, y)) gameState
+inputHandler Play (EventKey (SpecialKey KeyLeft) _ _ _) gameState =
+  return $ moveFn (\(x, y) -> (x - 1, y)) gameState
 -- Right Key
-inputHandler Play (EventKey (SpecialKey KeyRight) _ _ _) gameState = return $
-  moveFn (\(x, y) -> (x + 1, y)) gameState
+inputHandler Play (EventKey (SpecialKey KeyRight) _ _ _) gameState =
+  return $ moveFn (\(x, y) -> (x + 1, y)) gameState
 -- Up Key
-inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState = return $
-  moveFn (\(x, y) -> (x, y - 1)) gameState
+inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState =
+  return $ moveFn (\(x, y) -> (x, y - 1)) gameState
 -- Down Key
-inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState = return $
-  moveFn (\(x, y) -> (x, y + 1)) gameState
-inputHandler Play (EventKey (SpecialKey KeyEsc) Up _ _) gameState = return
-  gameState { unScene = Pause }
+inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState =
+  return $ moveFn (\(x, y) -> (x, y + 1)) gameState
+inputHandler Play (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
+  return gameState { unScene = Pause }
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
-inputHandler Pause (EventKey (SpecialKey KeyEnter) Up _ _) gameState = return
-  gameState { unScene = Home }
-inputHandler Pause (EventKey (SpecialKey KeyEsc) Up _ _) gameState = return
-  gameState { unScene = Play }
+inputHandler Pause (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
+  return gameState { unScene = Home }
+inputHandler Pause (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
+  return gameState { unScene = Play }
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
@@ -57,8 +57,13 @@ inputHandler Home (EventKey (SpecialKey KeyEsc) Up _ _) gameState = exitSuccess
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-inputHandler GameOver (EventKey (SpecialKey KeyEnter) Up _ _) gameState = return
-  gameState { unScene = Home }
+inputHandler (GameOver _) (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
+  return gameState { unScene = Home }
+inputHandler (GameOver str) (EventKey (SpecialKey KeyBackspace) Up _ _) gameState
+  = return gameState { unScene = GameOver (init str) }
+inputHandler (GameOver str) (EventKey (Char c) Up _ _) gameState
+  | length str <= 20 = return gameState { unScene = GameOver (str ++ [c]) }
+  | otherwise        = return gameState
 --------------------------------------------------------------------------------
 inputHandler _ _ gameState = return gameState
 --------------------------------------------------------------------------------
