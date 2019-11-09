@@ -53,6 +53,10 @@ movePath' nfn dt p | nd <= 0   = movePath' nfn (-nd) $ nfn p
 -- just move to the next node
 nextFn (P (_ : npns) _) = P npns $ newDistance npns
 
+setDestiniation :: [PathNode] -> Path -> Path
+setDestiniation d (P (a : _) _) = P nps $ newDistance nps
+  where nps = a : d
+
 type CanPassFn = PathNode -> Bool
 type StepFn = PathNode -> PathNode
 
@@ -61,8 +65,9 @@ type PickDirectionFn = PathNode -> [PathDirection] -> PathDirection
 
 -- implement ghost choice using PacMan Path in PickDirectionFn
 ghostFn :: CanPassFn -> PickDirectionFn -> Path -> Path
-ghostFn canPass pick gp@(P (a : b : _) _) | outside b = nextFn gp
-                                          | otherwise = P p $ newDistance p
+ghostFn canPass pick gp@(P (a : b : cs) _) 
+  | outside b || any (const True) cs = nextFn gp                                           
+  | otherwise                        = P p $ newDistance p
  where
         -- create new path from node b following in direction d
   p  = b : follow canPass isFinished (stepFn d) b

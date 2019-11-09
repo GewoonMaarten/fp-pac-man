@@ -17,6 +17,7 @@ updateScene Play dt = checkGameOver
                     . updateEnergizerTimers dt 
                     . collectItems 
                     . collide 
+                    . wakeUpGhost
                     . ghostUpdates 
                     . pacManUpdate
  where
@@ -39,6 +40,17 @@ updateScene Play dt = checkGameOver
     | null (getAvailableCollectibles gs1) = gs1 { unScene = GameOver }
     | unLives (unPacMan gs1) == 0         = gs1 { unScene = GameOver }
     | otherwise                           = gs1
+
+  wakeUpGhost :: GameState -> GameState
+  wakeUpGhost gs = f awakeGhosts
+    where
+      f 1 = randomWakeUp 1 10
+      f 2 = if (unScore . unPacMan) gs > 300 then randomWakeUp 2 10 else gs
+      f 3 = if (unScore . unPacMan) gs > 800 then randomWakeUp 3 10 else gs
+      f _ = gs
+      randomWakeUp i chance = if r <= chance then wakeGhost i (setDestiniation [(9, 9), (9, 7)]) gs' else gs'
+        where (r, gs') = getRandom 1000 gs
+      awakeGhosts = length $ filter isAwake (unGhosts gs)
 
   collide :: GameState -> GameState
   collide gs = f $ checkTouch (unPacMan gs) (unGhosts gs)

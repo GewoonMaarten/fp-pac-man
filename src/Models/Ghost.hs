@@ -37,8 +37,8 @@ performGhostUpdate canPass pmPath dt g = g
   -- implement different pick behaviours depending on pmPath
   pick :: GhostType -> PathNode -> [PathDirection] -> PathDirection
   pick Blinky l ds = bestDirection l ds (destination pmPath)
-  pick Inky   l ds = bestDirection l ds (destination pmPath)
-  pick Pinky  l ds = bestDirection l ds (source pmPath)
+  pick Inky   l ds = bestDirection l ds (source pmPath)
+  pick Pinky  l ds = bestDirection l ds (destination pmPath)
   pick Clyde  l ds = bestDirection l ds (source pmPath)
 
 getPos :: Path -> (Float, Float)
@@ -59,3 +59,6 @@ drawGhost g ts = case unGhostState g of
     Nothing -> blank
   a stage =
     translate x (-y) $ scale s s (getTexture stage (texturesGhostAfraid ts))
+
+isAwake :: Ghost -> Bool
+isAwake = not . isStationary . unPathG

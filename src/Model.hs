@@ -3,9 +3,9 @@ module Model where
 import           Models.PacMan
 import           Models.Ghost
 import           Utils.Graphics
-import           Graphics.Gloss
-import           Graphics.Gloss.Interface.IO.Game
+import           Graphics.Gloss          hiding ( Path )
 import           System.Random
+import           Utils.Path
 
 data GameState = GameState {
     unScene :: Scene,
@@ -25,6 +25,17 @@ resetGhosts gs = gs { unGhosts = map (initialGhost . unType) $ unGhosts gs }
 resetGhost :: GhostType -> GameState -> GameState
 resetGhost t gs = gs { unGhosts = map r $ unGhosts gs }
   where r g = if unType g == t then initialGhost t else g
+  
+wakeGhost :: Int -> (Path -> Path) -> GameState -> GameState
+wakeGhost i f gs = gs { unGhosts = map r $ zip [0..] $ unGhosts gs }
+  where 
+    r (j, g) = if j == i then w g else g
+    w :: Ghost -> Ghost
+    w g = g { unPathG = f $ unPathG g }
+
+getRandom :: Int -> GameState -> (Int, GameState)
+getRandom i gs = fmap setRandom $ randomR (0, i) $ unRandom gs
+  where setRandom r = gs { unRandom = r }
 
 data Scene = Play | Pause | Home | GameOver
   deriving(Eq, Show)
