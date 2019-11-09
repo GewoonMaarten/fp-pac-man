@@ -69,13 +69,15 @@ drawScene Pause _ _ = txtsToPic
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-drawScene GameOver _ gameState =
+drawScene (GameOver name) _ gameState =
   let pacMan      = unPacMan gameState
       gameOverStr = if unLives pacMan == 0 then "Game Over" else "You Win!"
   in  txtsToPic
         (floatLeft 40)
         0
         [ (gameOverStr                    , Medium)
+        , ("Enter your name: "            , Small)
+        , (name                           , Small)
         , ("Your score: " ++ show (unScore pacMan), Small)
         , (""                             , Small)
         , ("Press \"Enter\" to go to menu", Smallest)

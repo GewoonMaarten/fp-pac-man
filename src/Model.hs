@@ -25,19 +25,19 @@ resetGhosts gs = gs { unGhosts = map (initialGhost . unType) $ unGhosts gs }
 resetGhost :: GhostType -> GameState -> GameState
 resetGhost t gs = gs { unGhosts = map r $ unGhosts gs }
   where r g = if unType g == t then initialGhost t else g
-  
+
 wakeGhost :: Int -> (Path -> Path) -> GameState -> GameState
-wakeGhost i f gs = gs { unGhosts = map r $ zip [0..] $ unGhosts gs }
-  where 
-    r (j, g) = if j == i then w g else g
-    w :: Ghost -> Ghost
-    w g = g { unPathG = f $ unPathG g }
+wakeGhost i f gs = gs { unGhosts = zipWith (curry r) [0 ..] (unGhosts gs) }
+ where
+  r (j, g) = if j == i then w g else g
+  w :: Ghost -> Ghost
+  w g = g { unPathG = f $ unPathG g }
 
 getRandom :: Int -> GameState -> (Int, GameState)
 getRandom i gs = fmap setRandom $ randomR (0, i) $ unRandom gs
   where setRandom r = gs { unRandom = r }
 
-data Scene = Play | Pause | Home | GameOver
+data Scene = Play | Pause | Home | GameOver String
   deriving(Eq, Show)
 
 data Grid = Grid {
