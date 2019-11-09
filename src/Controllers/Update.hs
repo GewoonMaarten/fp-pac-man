@@ -65,7 +65,7 @@ updateScene Play dt = checkGameOver
           find
             (\g ->
               let (gx, gy) = ghostPos g
-              in  floor gx == floor px && floor gy == floor py
+              in  abs (gx - px) <= 1 && abs (gy - py) <= 1
             )
             gs
 updateScene _ _ = id
