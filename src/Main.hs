@@ -19,6 +19,7 @@ import           System.Exit
 import           System.Random
 main :: IO ()
 main = do
+    textures <- loadTextures
     (screenWidth, screenHeight) <- getScreenSize
     playIO
         (InWindow
@@ -31,17 +32,15 @@ main = do
         black -- Background Color
         30 -- Number of steps per second
         intialGameState -- Initial world
-        draw -- (world -> IO Picture)
+        (draw textures) -- (world -> IO Picture)
         input -- (Event -> world -> IO world)
         update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
 intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [] $ mkStdGen 1
 
-draw :: GameState -> IO Picture
-draw gs = do
-    textures <- loadTextures
-    return (drawScene (unScene gs) textures gs)
+draw :: Textures -> GameState -> IO Picture
+draw textures gs = return (drawScene (unScene gs) textures gs)
 
 input :: Event -> GameState -> IO GameState
 input (EventKey (SpecialKey KeyEsc) Up _ _) _ = exitSuccess

@@ -51,11 +51,11 @@ inputHandler GameOver (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
 inputHandler _ _ gameState = gameState
 --------------------------------------------------------------------------------
 
-
+moveFn :: StepFn -> GameState -> GameState
 moveFn dirFn gameState =
   gameState { unPacMan = move (unLevel gameState) dirFn (unPacMan gameState) }
 
-move :: Grid -> ((Int, Int) -> (Int, Int)) -> PacMan -> PacMan
+move :: Grid -> StepFn -> PacMan -> PacMan
 move grid step pm = if upN /= head followed then mutate else pm
  where
   p           = unPath pm
