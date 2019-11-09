@@ -9,10 +9,10 @@ import           Models.Ghost
 import           Models.PacMan
 import           Models.Level
 
-initialPlay :: GameState -> GameState
-initialPlay gameState = gameState
+initialPlay :: [[Int]] -> GameState -> GameState
+initialPlay level gameState = gameState
   { unScene  = Play
-  , unLevel  = buildGrid gridX gridY gridSize
+  , unLevel  = buildGrid level
   , unGhosts = [ initialGhost Blinky
                , initialGhost Inky
                , initialGhost Pinky

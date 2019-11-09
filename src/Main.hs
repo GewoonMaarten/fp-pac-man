@@ -17,6 +17,7 @@ import           Graphics.Gloss.Interface.IO.Game
 import           Graphics.Gloss.Interface.Environment
 import           System.Exit
 import           System.Random
+
 main :: IO ()
 main = do
     textures <- loadTextures
@@ -44,7 +45,7 @@ draw textures gs = return (drawScene (unScene gs) textures gs)
 
 input :: Event -> GameState -> IO GameState
 input (EventKey (SpecialKey KeyEsc) Up _ _) _ = exitSuccess
-input event gs = return (inputHandler (unScene gs) event gs)
+input event gs = inputHandler (unScene gs) event gs
 
 update :: Float -> GameState -> IO GameState
 update dt gs = return (updateScene (unScene gs) dt gs)

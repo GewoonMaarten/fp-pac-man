@@ -12,43 +12,50 @@ import           Models.Level
 import           Models.PacMan
 import           Utils.Path
 import           Utils.Play
+import           Data.List.Split
 
-inputHandler :: Scene -> Event -> GameState -> GameState
+inputHandler :: Scene -> Event -> GameState -> IO GameState
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
-inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
-  initialPlay gameState
+inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState = do
+  csvString <- readFile "assets/map.csv"
+  return (initialPlay (level csvString) gameState)
+  where
+    level :: String -> [[Int]]
+    level = map (map t . splitOn ",") . lines
+    t :: String -> Int
+    t = read
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------
-inputHandler Play (EventKey (SpecialKey KeyLeft) _ _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeyLeft) _ _ _) gameState = return $
   moveFn (\(x, y) -> (x - 1, y)) gameState
 -- Right Key
-inputHandler Play (EventKey (SpecialKey KeyRight) _ _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeyRight) _ _ _) gameState = return $
   moveFn (\(x, y) -> (x + 1, y)) gameState
 -- Up Key
-inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState = return $
   moveFn (\(x, y) -> (x, y - 1)) gameState
 -- Down Key
-inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState = return $
   moveFn (\(x, y) -> (x, y + 1)) gameState
-inputHandler Play (EventKey (SpecialKey KeySpace) Up _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeySpace) Up _ _) gameState = return
   gameState { unScene = Pause }
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
-inputHandler Pause (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
+inputHandler Pause (EventKey (SpecialKey KeyEnter) Up _ _) gameState = return
   gameState { unScene = Home }
-inputHandler Pause (EventKey (SpecialKey KeySpace) Up _ _) gameState =
+inputHandler Pause (EventKey (SpecialKey KeySpace) Up _ _) gameState = return
   gameState { unScene = Play }
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-inputHandler GameOver (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
+inputHandler GameOver (EventKey (SpecialKey KeyEnter) Up _ _) gameState = return
   gameState { unScene = Home }
 --------------------------------------------------------------------------------
-inputHandler _ _ gameState = gameState
+inputHandler _ _ gameState = return gameState
 --------------------------------------------------------------------------------
 
 moveFn :: StepFn -> GameState -> GameState
