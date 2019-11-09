@@ -3,8 +3,6 @@ module Controllers.Update
   )
 where
 
-import           Debug.Trace
-
 import           Controllers.Animator
 import           Model
 import           Models.Ghost
