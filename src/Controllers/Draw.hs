@@ -13,12 +13,13 @@ import           Models.Level
 import           Models.PacMan
 import           Utils.Graphics
 import           Utils.Text
+import           Utils.ScoreBoard
 
-drawScene :: Scene -> Textures -> GameState -> Picture
+drawScene :: Scene -> Textures -> [Score] -> GameState -> Picture
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------
-drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
+drawScene Play ts@(Textures _ _ gt gat pt pdt _) _ gameState =
   pictures
     $  showGrid ts (unLevel gameState)
     ++ [ drawGhost g ts | g <- unGhosts gameState ]
@@ -36,7 +37,7 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
-drawScene Home ts _ = pictures [banner, txts]
+drawScene Home ts _ _ = pictures [banner, txts]
  where
   banner = translate 0 150 $ scale 0.4 0.4 $ textureBanner ts
   txts   = txtsToPic
@@ -57,7 +58,7 @@ drawScene Home ts _ = pictures [banner, txts]
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
-drawScene Pause _ _ = txtsToPic
+drawScene Pause _ _ _ = txtsToPic
   (floatLeft 40)
   0
   [ ("Pause"                        , Large)
@@ -69,17 +70,28 @@ drawScene Pause _ _ = txtsToPic
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-drawScene (GameOver name) _ gameState =
+drawScene (GameOver name) _ scores gameState =
   let pacMan      = unPacMan gameState
       gameOverStr = if unLives pacMan == 0 then "Game Over" else "You Win!"
+      topThree = formatScores scores
   in  txtsToPic
         (floatLeft 40)
-        0
-        [ (gameOverStr                    , Medium)
-        , ("Enter your name: "            , Smallest)
-        , (name                           , Smallest)
-        , ("Your score: " ++ show (unScore pacMan), Small)
-        , (""                             , Smallest)
-        , ("Press \"Enter\" to go to menu", Smallest)
-        , ("Press \"Esc\" to quit"        , Smallest)
-        ]
+        150
+        (  [ (gameOverStr, Medium)
+           , (""         , Small)
+           , (""         , Small)
+           , ("Top 3"    , Small)
+           ]
+        ++ topThree
+        ++ [ (""                             , Smallest)
+           , (""                             , Smallest)
+           , ("Your score: " ++ show (unScore pacMan), Small)
+           , ("Enter your name: "            , Smallest)
+           , (name                           , Smallest)
+           , (""                             , Smallest)
+           , (""                             , Smallest)
+           , (""                             , Smallest)
+           , ("Press \"Enter\" to go to menu", Smallest)
+           , ("Press \"Esc\" to quit"        , Smallest)
+           ]
+        )

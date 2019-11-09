@@ -14,6 +14,7 @@ import           Utils.Path
 import           Utils.Play
 import           Data.List.Split
 import           Utils.ScoreBoard
+import           Paths_PacMan
 
 inputHandler :: Scene -> Event -> GameState -> IO GameState
 --------------------------------------------------------------------------------
@@ -56,8 +57,7 @@ inputHandler Pause (EventKey (SpecialKey KeySpace) Up _ _) gameState =
 --------------------------------------------------------------------------------
 inputHandler (GameOver str) (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
   do
-    setScore ("test", 0)
-    setScore (str, unScore $ unPacMan gameState)
+    setScore (unScore $ unPacMan gameState, str)
     return gameState { unScene = Home }
 inputHandler (GameOver str) (EventKey (SpecialKey KeyBackspace) Up _ _) gameState
   | not (null str)

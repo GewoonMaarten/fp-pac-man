@@ -35,15 +35,15 @@ main = do
         black -- Background Color
         30 -- Number of steps per second
         intialGameState -- Initial world
-        (draw textures) -- (world -> IO Picture)
+        (draw textures scores) -- (world -> IO Picture)
         input -- (Event -> world -> IO world)
         update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
 intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [] $ mkStdGen 1
 
-draw :: Textures -> GameState -> IO Picture
-draw textures gs = return (drawScene (unScene gs) textures gs)
+draw :: Textures -> [Score] -> GameState -> IO Picture
+draw textures scores gs = return (drawScene (unScene gs) textures scores gs)
 
 input :: Event -> GameState -> IO GameState
 input (EventKey (SpecialKey KeyEsc) Up _ _) _ = exitSuccess
