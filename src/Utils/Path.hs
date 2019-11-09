@@ -94,6 +94,9 @@ newDistance (a : b : _) |
 
 outside (x, y) = x <= 0 || y <= 0 || x >= 18 || y >= 20
 
+distance :: PathNode -> PathNode -> Float
+distance a b = magV $ (toVector b) Pt.- (toVector a)
+
 dir :: PathNode -> PathNode -> PathDirection
 dir (x1, y1) (x2, y2) = (d x1 x2, d y1 y2)
  where
