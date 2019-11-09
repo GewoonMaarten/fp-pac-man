@@ -16,7 +16,6 @@ import           Utils.ScoreBoard
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
 import           Graphics.Gloss.Interface.Environment
-import           System.Exit
 import           System.Random
 
 main :: IO ()
@@ -46,7 +45,6 @@ draw :: Textures -> [Score] -> GameState -> IO Picture
 draw textures scores gs = return (drawScene (unScene gs) textures scores gs)
 
 input :: Event -> GameState -> IO GameState
-input (EventKey (SpecialKey KeyEsc) Up _ _) _ = exitSuccess
 input event gs = inputHandler (unScene gs) event gs
 
 update :: Float -> GameState -> IO GameState

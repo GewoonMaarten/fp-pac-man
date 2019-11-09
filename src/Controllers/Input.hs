@@ -15,6 +15,7 @@ import           Utils.Play
 import           Data.List.Split
 import           Utils.ScoreBoard
 import           Paths_PacMan
+import           System.Exit
 
 inputHandler :: Scene -> Event -> GameState -> IO GameState
 --------------------------------------------------------------------------------
@@ -43,15 +44,19 @@ inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState =
 -- Down Key
 inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState =
   return $ moveFn (\(x, y) -> (x, y + 1)) gameState
-inputHandler Play (EventKey (SpecialKey KeySpace) Up _ _) gameState =
+inputHandler Play (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
   return gameState { unScene = Pause }
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
 inputHandler Pause (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
   return gameState { unScene = Home }
-inputHandler Pause (EventKey (SpecialKey KeySpace) Up _ _) gameState =
+inputHandler Pause (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
   return gameState { unScene = Play }
+--------------------------------------------------------------------------------
+-- Scene: Home
+--------------------------------------------------------------------------------
+inputHandler Home (EventKey (SpecialKey KeyEsc) Up _ _) gameState = exitSuccess
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------

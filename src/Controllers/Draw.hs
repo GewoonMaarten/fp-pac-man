@@ -30,8 +30,7 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) _ gameState =
          (floatLeft 20)
          (-240)
          [ ("Use the arrow keys to move around", Smallest)
-         , ("Press \"Space\" to pause"         , Smallest)
-         , ("Press \"Esc\" to quit"            , Smallest)
+         , ("Press \"Esc\" to pause"           , Smallest)
          ]
        ]
 --------------------------------------------------------------------------------
@@ -63,9 +62,8 @@ drawScene Pause _ _ _ = txtsToPic
   0
   [ ("Pause"                        , Large)
   , (""                             , Small)
-  , ("Press \"Space\" to unpause"   , Smallest)
+  , ("Press \"Esc\" to unpause"   , Smallest)
   , ("Press \"Enter\" to go to menu", Smallest)
-  , ("Press \"Esc\" to quit"        , Smallest)
   ]
 --------------------------------------------------------------------------------
 -- Scene: GameOver
