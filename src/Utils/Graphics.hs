@@ -25,33 +25,34 @@ loadTextures :: IO Textures
 loadTextures = do
   pacManTextures <-
     PacManTextureSet
-    <$> loadBMP' "assets/pac_man_0.bmp"
-    <*> loadBMP' "assets/pac_man_1.bmp"
-    <*> loadBMP' "assets/pac_man_2.bmp"
-    <*> loadBMP' "assets/pac_man_3.bmp"
+    <$> loadBMP' "assets/bmp/pac_man_0.bmp"
+    <*> loadBMP' "assets/bmp/pac_man_1.bmp"
+    <*> loadBMP' "assets/bmp/pac_man_2.bmp"
+    <*> loadBMP' "assets/bmp/pac_man_3.bmp"
   deathTextures <-
     DeathTextureSet
-    <$> loadBMP' "assets/spr_pacdeath_0.bmp"
-    <*> loadBMP' "assets/spr_pacdeath_1.bmp"
-    <*> loadBMP' "assets/spr_pacdeath_2.bmp"
+    <$> loadBMP' "assets/bmp/spr_pacdeath_0.bmp"
+    <*> loadBMP' "assets/bmp/spr_pacdeath_1.bmp"
+    <*> loadBMP' "assets/bmp/spr_pacdeath_2.bmp"
   blinkyTextures <-
-    GhostTextureSet <$> loadBMP' "assets/spr_ghost_red_0.bmp" <*> loadBMP'
-      "assets/spr_ghost_red_1.bmp"
+    GhostTextureSet <$> loadBMP' "assets/bmp/spr_ghost_red_0.bmp" <*> loadBMP'
+      "assets/bmp/spr_ghost_red_1.bmp"
   inkyTextures <-
-    GhostTextureSet <$> loadBMP' "assets/spr_ghost_blue_0.bmp" <*> loadBMP'
-      "assets/spr_ghost_blue_1.bmp"
+    GhostTextureSet <$> loadBMP' "assets/bmp/spr_ghost_blue_0.bmp" <*> loadBMP'
+      "assets/bmp/spr_ghost_blue_1.bmp"
   pinkyTextures <-
-    GhostTextureSet <$> loadBMP' "assets/spr_ghost_pink_0.bmp" <*> loadBMP'
-      "assets/spr_ghost_pink_1.bmp"
+    GhostTextureSet <$> loadBMP' "assets/bmp/spr_ghost_pink_0.bmp" <*> loadBMP'
+      "assets/bmp/spr_ghost_pink_1.bmp"
   clydeTextures <-
-    GhostTextureSet <$> loadBMP' "assets/spr_ghost_orange_0.bmp" <*> loadBMP'
-      "assets/spr_ghost_orange_1.bmp"
+    GhostTextureSet
+    <$> loadBMP' "assets/bmp/spr_ghost_orange_0.bmp"
+    <*> loadBMP' "assets/bmp/spr_ghost_orange_1.bmp"
   afraidTextures <-
-    GhostTextureSet <$> loadBMP' "assets/spr_afraid_0.bmp" <*> loadBMP'
-      "assets/spr_afraid_1.bmp"
-  lifeCounter   <- loadBMP' "assets/spr_lifecounter_0.bmp"
-  cherryTexture <- loadBMP' "assets/spr_cherry_0.bmp"
-  bannerTexture <- loadBMP' "assets/spr_banner_0.bmp"
+    GhostTextureSet <$> loadBMP' "assets/bmp/spr_afraid_0.bmp" <*> loadBMP'
+      "assets/bmp/spr_afraid_1.bmp"
+  lifeCounter   <- loadBMP' "assets/bmp/spr_lifecounter_0.bmp"
+  cherryTexture <- loadBMP' "assets/bmp/spr_cherry_0.bmp"
+  bannerTexture <- loadBMP' "assets/bmp/spr_banner_0.bmp"
   return Textures
     { textureLifeCounter  = lifeCounter
     , textureCherry       = cherryTexture

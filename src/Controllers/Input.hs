@@ -13,13 +13,15 @@ import           Models.PacMan
 import           Utils.Path
 import           Utils.Play
 import           Data.List.Split
+import           Utils.ScoreBoard
 
 inputHandler :: Scene -> Event -> GameState -> IO GameState
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
 inputHandler Home (EventKey (SpecialKey KeyEnter) Up _ _) gameState = do
-  csvString <- readFile "assets/map.csv"
+  filePath  <- getDataFileName "assets/map/map.csv"
+  csvString <- readFile filePath
   return (initialPlay (level csvString) gameState)
  where
   level :: String -> [[Int]]
@@ -52,10 +54,16 @@ inputHandler Pause (EventKey (SpecialKey KeySpace) Up _ _) gameState =
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-inputHandler (GameOver _) (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
-  return gameState { unScene = Home }
+inputHandler (GameOver str) (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
+  do
+    setScore ("test", 0)
+    setScore (str, unScore $ unPacMan gameState)
+    return gameState { unScene = Home }
 inputHandler (GameOver str) (EventKey (SpecialKey KeyBackspace) Up _ _) gameState
+  | not (null str)
   = return gameState { unScene = GameOver (init str) }
+  | otherwise
+  = return gameState
 inputHandler (GameOver str) (EventKey (Char c) Up _ _) gameState
   | length str <= 20 = return gameState { unScene = GameOver (str ++ [c]) }
   | otherwise        = return gameState

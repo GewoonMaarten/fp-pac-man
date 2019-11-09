@@ -76,10 +76,10 @@ drawScene (GameOver name) _ gameState =
         (floatLeft 40)
         0
         [ (gameOverStr                    , Medium)
-        , ("Enter your name: "            , Small)
-        , (name                           , Small)
+        , ("Enter your name: "            , Smallest)
+        , (name                           , Smallest)
         , ("Your score: " ++ show (unScore pacMan), Small)
-        , (""                             , Small)
+        , (""                             , Smallest)
         , ("Press \"Enter\" to go to menu", Smallest)
         , ("Press \"Esc\" to quit"        , Smallest)
         ]

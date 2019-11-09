@@ -11,6 +11,7 @@ import           Controllers.Update             ( updateScene )
 import           Utils.Collectible
 import           Utils.Path
 import           Utils.Graphics
+import           Utils.ScoreBoard
 
 import           Graphics.Gloss
 import           Graphics.Gloss.Interface.IO.Game
@@ -20,7 +21,8 @@ import           System.Random
 
 main :: IO ()
 main = do
-    textures <- loadTextures
+    textures                    <- loadTextures
+    scores                      <- getScores
     (screenWidth, screenHeight) <- getScreenSize
     playIO
         (InWindow

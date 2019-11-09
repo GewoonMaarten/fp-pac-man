@@ -15,7 +15,9 @@ maintainer:          m.f.deklerk@students.uu.nl
 -- copyright:
 category:            Game
 extra-source-files:  CHANGELOG.md, README.md
-data-files:          assets/*.bmp
+data-files:          assets/bmp/*.bmp
+                     assets/map/*.csv
+                     assets/ScoreBoard.txt
 executable PacMan
   main-is:            Main.hs
   other-modules:      Config
