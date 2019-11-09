@@ -54,7 +54,7 @@ updateScene Play dt = checkGameOver
   collide gs = f $ checkTouch (unPacMan gs) (unGhosts gs)
     where 
       f Nothing = gs
-      f (Just (Ghost _ t (Edible _) _ _ _)) = (resetGhost t . addScore 100) $ gs
+      f (Just (Ghost _ t (Edible _) _ _)) = (resetGhost t . addScore 100) $ gs
       f _ = resetGhosts $ gs { unPacMan = updateLives (unPacMan gs) }
       checkTouch :: PacMan -> [Ghost] -> Maybe Ghost
       checkTouch pm gs =
@@ -65,7 +65,7 @@ updateScene Play dt = checkGameOver
           find
             (\g ->
               let (gx, gy) = ghostPos g
-              in  abs (gx - px) <= 1 && abs (gy - py) <= 1
+              in  abs (gx - px) < 1 && abs (gy - py) < 1
             )
             gs
 updateScene _ _ = id

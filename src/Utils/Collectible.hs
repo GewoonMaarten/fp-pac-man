@@ -61,7 +61,7 @@ getAvailableCollectibles gs =
 isToggled :: GameState -> Bool
 isToggled gs = any checkEdible $ unGhosts gs
  where
-  checkEdible (Ghost _ _ (Edible _) _ _ _) = True
+  checkEdible (Ghost _ _ (Edible _) _ _) = True
   checkEdible _                            = False
 
 toggleEnergizer :: GameState -> GameState
@@ -76,7 +76,7 @@ toggleEnergizer gs | isToggled gs = removeEnergizer gs
   changeGhostsState gst gs =
     gs { unGhosts = map (changeGhostState gst) $ unGhosts gs }
   changeGhostState gst g
-    | unIsReleased g = g
+    | isAwake g = g
       { unGhostState       = gst
       , unGhostEdibleTimer = case gst of
                                Edible _ -> unGhostEdibleTimer g + 10
@@ -88,7 +88,7 @@ updateEnergizerTimers :: Float -> GameState -> GameState
 updateEnergizerTimers secs gs =
   let ghosts = unGhosts gs in gs { unGhosts = map updateEngerizerTimer ghosts }
  where
-  updateEngerizerTimer g@(Ghost _ _ (Edible _) _ timer _)
+  updateEngerizerTimer g@(Ghost _ _ (Edible _) _ timer)
     | timer - secs > 0 = g { unGhostEdibleTimer = timer - secs }
     | otherwise = g { unGhostEdibleTimer = 0, unGhostState = Normal GOne }
   updateEngerizerTimer g = g { unGhostEdibleTimer = 0 }

@@ -32,13 +32,13 @@ instance Animatable PacMan where
 ghostAnimationUpdateTime = 0.4
 ghostAnimationUpdateTimeFast = 0.2
 instance Animatable Ghost where
-    updateAnimation secs g@(Ghost _ _ (Edible stage) _ _ _)
+    updateAnimation secs g@(Ghost _ _ (Edible stage) _ _)
         | unGhostAnimTimer g + secs > ghostAnimationUpdateTime = g
             { unGhostAnimTimer = 0
             , unGhostState     = Edible (nextAnimStage stage)
             }
         | otherwise = g { unGhostAnimTimer = unGhostAnimTimer g + secs }
-    updateAnimation secs g@(Ghost _ _ (Normal stage) _ _ _)
+    updateAnimation secs g@(Ghost _ _ (Normal stage) _ _)
         | unGhostAnimTimer g + secs > ghostAnimationUpdateTime = g
             { unGhostAnimTimer = 0
             , unGhostState     = Normal (nextAnimStage stage)

@@ -19,15 +19,14 @@ data Ghost = Ghost {
     unType :: GhostType,
     unGhostState :: GhostState,
     unGhostAnimTimer :: Float,
-    unGhostEdibleTimer :: Float,
-    unIsReleased :: Bool
+    unGhostEdibleTimer :: Float
 } deriving (Show)
 
 initialGhost Blinky =
-  Ghost (P [(9, 7), (12, 7)] 6) Blinky (Normal GOne) 0 0 True
-initialGhost Inky  = Ghost (P [(9, 9)] 1) Inky (Normal GOne) 0 0 False
-initialGhost Pinky = Ghost (P [(8, 9)] 1) Pinky (Normal GOne) 0 0 False
-initialGhost Clyde = Ghost (P [(10, 9)] 1) Clyde (Normal GOne) 0 0 False
+  Ghost (P [(9, 7), (12, 7)] 6) Blinky (Normal GOne) 0 0
+initialGhost Inky  = Ghost (P [(9, 9)] 1) Inky (Normal GOne) 0 0
+initialGhost Pinky = Ghost (P [(8, 9)] 1) Pinky (Normal GOne) 0 0
+initialGhost Clyde = Ghost (P [(10, 9)] 1) Clyde (Normal GOne) 0 0
 
 performGhostUpdate canPass pmPath dt g = g
   { unPathG = movePath' (ghostFn canPass pickFn) (dt * 4) (unPathG g)
