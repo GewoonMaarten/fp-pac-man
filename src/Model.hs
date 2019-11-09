@@ -19,6 +19,13 @@ addScore :: Int -> GameState -> GameState
 addScore s gs = gs { unPacMan = addScoreM $ unPacMan gs }
   where addScoreM pm = pm { unScore = unScore pm + s }
 
+resetGhosts :: GameState -> GameState
+resetGhosts gs = gs { unGhosts = map (initialGhost . unType) $ unGhosts gs }
+
+resetGhost :: GhostType -> GameState -> GameState
+resetGhost t gs = gs { unGhosts = map r $ unGhosts gs }
+  where r g = if unType g == t then initialGhost t else g
+
 data Scene = Play | Pause | Home | GameOver
   deriving(Eq, Show)
 

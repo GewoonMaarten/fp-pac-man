@@ -69,8 +69,8 @@ updateInvincibleTimer :: Float -> Float -> Float
 updateInvincibleTimer dt secs | secs - dt <= 0 = 0
                               | otherwise      = secs - dt
 
-updateLives :: PacMan -> [Ghost] -> PacMan
-updateLives pm gs =
+updateLives :: PacMan -> PacMan
+updateLives pm =
   let lives = unLives pm
   in  pm { unLives = lives - 1, unInvincibleTimer = 5, unPath = spawnPoint }
 
