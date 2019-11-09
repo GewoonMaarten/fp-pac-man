@@ -47,6 +47,8 @@ data Grid = Grid {
   getGridSize :: Float
 } deriving (Show)
 
+asList :: [[GridItem]] -> [(PathNode, GridItem)]
+asList gis = [((x, y), c) | (y, r) <- zip [0..] gis, (x, c) <- zip [0..] r]
 
 data CollectibleType = PacDot
                      | Energizer
@@ -66,8 +68,24 @@ data GridItem = Empty
               | Collectible CollectibleState CollectibleType CollectibleScore
   deriving (Eq, Show)
 
+isFruit (Collectible _ Fruit _) = True
+isFruit _ = False
+
 canPass Empty         = True
 canPass Collectible{} = True
 canPass _             = False
 
 getGridItem grid (x, y) = level !! y !! x where level = getGridItems grid
+
+replaceGridItem :: PathNode -> GridItem -> Grid -> Grid
+replaceGridItem (x, y) g1 grid = grid { getGridItems = giss }
+  where
+    gridItems = getGridItems grid
+    (giss1, gi : giss2) = splitAt y gridItems
+    (gis1 , _ : gis2  ) = splitAt x gi
+    gis                 = gis1 ++ g1 : gis2
+    giss                = giss1 ++ gis : giss2
+
+isCollected :: GridItem -> Bool
+isCollected (Collectible Collected _ _) = True
+isCollected _ = False

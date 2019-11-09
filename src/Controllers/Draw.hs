@@ -20,7 +20,7 @@ drawScene :: Scene -> Textures -> GameState -> Picture
 --------------------------------------------------------------------------------
 drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
   pictures
-    $  showGrid (unLevel gameState)
+    $  showGrid ts (unLevel gameState)
     ++ [ drawGhost g ts | g <- unGhosts gameState ]
     ++ [ showPacMan pt $ unPacMan gameState
        , showScore $ unPacMan gameState
