@@ -11,7 +11,6 @@ import           Models.Ghost            hiding ( unPath )
 import           Models.PacMan
 import           Model
 import           Utils.Path
-import           Debug.Trace
 import           Data.List
 
 -- Number of seconds a ghost should be edible
@@ -25,17 +24,13 @@ collectItems gs = foldr collect gs pmTiles
   floorceil a = nub [floor a, ceiling a]
   pmTiles = (,) <$> floorceil px <*> floorceil py
 
-  collect :: (Int, Int) -> GameState -> GameState
-  collect (x, y) gs = (doToggleEnergizer g . addScore s) $ gs { unLevel = grid { getGridItems = giss } }
+  collect :: PathNode -> GameState -> GameState
+  collect l gs = (doToggleEnergizer g . addScore s) $ gs { unLevel = giss }
     where
-      grid                = unLevel gs
-      gridItems           = getGridItems grid
-      
-      (giss1, gi : giss2) = splitAt y gridItems
-      (gis1 , g : gis2  ) = splitAt x gi
-      (g1   , s         ) = pickup g
-      gis                 = gis1 ++ g1 : gis2
-      giss                = giss1 ++ gis : giss2
+      grid = unLevel gs
+      g = getGridItem grid l
+      (g1, s) = pickup g
+      giss = replaceGridItem l g1 grid
 
   pickup :: GridItem -> (GridItem, Int)
   pickup (Collectible Available t p) = (Collectible Collected t p, p)

@@ -10,11 +10,13 @@ import           Models.PacMan
 import           Utils.Collectible
 import           Utils.Path
 import           Data.List                      ( find )
+
 updateScene :: Scene -> Float -> GameState -> GameState
 updateScene Play dt =
   checkGameOver
     . updateEnergizerTimers dt
     . collectItems
+    . spawnFruit dt
     . collide
     . wakeUpGhost
     . ghostUpdates
@@ -42,6 +44,33 @@ updateScene Play dt =
     | null (getAvailableCollectibles gs1) = gs1 { unScene = GameOver "" }
     | unLives (unPacMan gs1) == 0         = gs1 { unScene = GameOver "" }
     | otherwise                           = gs1
+
+  spawnFruit :: Float -> GameState -> GameState
+  -- Chance starts from 0 at 500 points and is 100% at 1500 points
+  spawnFruit dt gs = if allowed
+    then randomSpawnFruit (floor $ dt * fromIntegral (s - 500)) gs
+    else gs
+   where
+    s = (unScore . unPacMan) gs
+    fruits =
+      [ c | y <- getGridItems $ unLevel gs, c@(Collectible _ Fruit _) <- y ]
+    allowed = s > 500 && (all isCollected fruits) && length fruits < 2
+
+  randomSpawnFruit chance gs = if r <= chance
+    then randomSpawnFruitLocation gs'
+    else gs'
+    where (r, gs') = getRandom 1000 gs
+
+  randomSpawnFruitLocation gs = setFruit chosen gs'
+   where
+    available = filter (isCollected . snd) $ asList $ getGridItems $ unLevel gs
+    (r, gs')  = getRandom (length available - 1) gs
+    chosen    = fst $ available !! r
+
+  setFruit :: PathNode -> GameState -> GameState
+  setFruit l gs = gs
+    { unLevel = replaceGridItem l (Collectible Available Fruit 200) (unLevel gs)
+    }
 
   wakeUpGhost :: GameState -> GameState
   wakeUpGhost gs = f awakeGhosts

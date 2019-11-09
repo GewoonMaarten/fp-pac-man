@@ -35,10 +35,20 @@ performGhostUpdate canPass pmPath dt g = g
   pickFn = pick $ unType g
   -- implement different pick behaviours depending on pmPath
   pick :: GhostType -> PathNode -> [PathDirection] -> PathDirection
-  pick Blinky l ds = bestDirection l ds (destination pmPath)
-  pick Inky   l ds = bestDirection l ds (source pmPath)
-  pick Pinky  l ds = bestDirection l ds (destination pmPath)
-  pick Clyde  l ds = bestDirection l ds (source pmPath)
+  -- Blinky is a chaser. (source Wikipedia)
+  pick Blinky l ds = bestDirection l ds (source pmPath)
+  -- Inky is speedy and tries to position himself in front of pacman. (source Wikipedia)
+  pick Inky   l ds = bestDirection l ds (destination pmPath)
+  -- Pinky switches between Blinky and Inky behaviour
+  pick Pinky  l@(x, y) ds = bestDirection l ds d
+    where 
+      d = if y < 10 then source pmPath else destination pmPath
+  -- Clyde is dumb when it gets too close (source Wikipedia)
+  pick Clyde  l ds = bestDirection l ds d
+    where
+      smartD = destination pmPath
+      dumbD  = (5, 15)
+      d = if (distance l smartD) < 5 then dumbD else smartD
 
 getPos :: Path -> (Float, Float)
 getPos p = (gridX, -gridY) Pt.+ gridSize Pt.* actualLocation p
