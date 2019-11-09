@@ -10,6 +10,7 @@ import           Models.PacMan
 import           Utils.Collectible
 import           Utils.Path
 import           Data.List                      ( find )
+import           Debug.Trace
 
 updateScene :: Scene -> Float -> GameState -> GameState
 updateScene Play dt =
@@ -48,13 +49,13 @@ updateScene Play dt =
   spawnFruit :: Float -> GameState -> GameState
   -- Chance starts from 0 at 500 points and is 100% at 1500 points
   spawnFruit dt gs = if allowed
-    then randomSpawnFruit (floor $ dt * fromIntegral (s - 500)) gs
+    then randomSpawnFruit (floor $ dt * fromIntegral (s - 1000)) gs
     else gs
    where
     s = (unScore . unPacMan) gs
     fruits =
       [ c | y <- getGridItems $ unLevel gs, c@(Collectible _ Fruit _) <- y ]
-    allowed = s > 500 && (all isCollected fruits) && length fruits < 2
+    allowed = s > 1000 && (all isCollected fruits) && length fruits < 2
 
   randomSpawnFruit chance gs = if r <= chance
     then randomSpawnFruitLocation gs'
@@ -76,8 +77,8 @@ updateScene Play dt =
   wakeUpGhost gs = f awakeGhosts
    where
     f 1 = randomWakeUp 1 10
-    f 2 = if (unScore . unPacMan) gs > 300 then randomWakeUp 2 10 else gs
-    f 3 = if (unScore . unPacMan) gs > 800 then randomWakeUp 3 10 else gs
+    f 2 = if (unScore . unPacMan) gs > 600 then randomWakeUp 2 10 else gs
+    f 3 = if (unScore . unPacMan) gs > 1400 then randomWakeUp 3 10 else gs
     f _ = gs
     randomWakeUp i chance = if r <= chance
       then wakeGhost i (setDestiniation [(9, 9), (9, 7)]) gs'
