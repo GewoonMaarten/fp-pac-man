@@ -59,7 +59,7 @@ updateScene Play dt = checkGameOver
       chosen = fst $ available !! r
 
   setFruit :: PathNode -> GameState -> GameState
-  setFruit l gs = gs { unLevel = replaceGridItem l (Collectible Available Fruit 800) (unLevel gs) }
+  setFruit l gs = gs { unLevel = replaceGridItem l (Collectible Available Fruit 200) (unLevel gs) }
 
   wakeUpGhost :: GameState -> GameState
   wakeUpGhost gs = f awakeGhosts
