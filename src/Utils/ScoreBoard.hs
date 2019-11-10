@@ -18,7 +18,7 @@ import           Utils.Text
 type Score = (Int, String)
 
 setScore :: Score -> IO ()
-setScore (scr, str) = do
+setScore (scr, str) =
   appendFile scoreBoardFilePath (str ++ ", " ++ show scr ++ "\n")
 
 getScores :: IO [Score]
@@ -31,6 +31,6 @@ getScores = do
 
 formatScores :: [Score] -> [Text]
 formatScores = map printRow . take 3 . sortOn (Down . fst)
-  where
-    printRow (scr, str) = (str ++ gap str scr ++ show scr, Smallest)
-    gap str scr = replicate (20 - (length str + length (show scr))) ' '
+ where
+  printRow (scr, str) = (str ++ gap str scr ++ show scr, Smallest)
+  gap str scr = replicate (20 - (length str + length (show scr))) ' '
