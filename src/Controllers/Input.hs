@@ -16,6 +16,7 @@ import           Data.List.Split
 import           Utils.ScoreBoard
 import           Paths_PacMan
 import           System.Exit
+import Debug.Trace
 
 inputHandler :: Scene -> Event -> GameState -> IO GameState
 --------------------------------------------------------------------------------
@@ -66,19 +67,29 @@ inputHandler Home (EventKey (SpecialKey KeyEsc) Up _ _) gameState = exitSuccess
 --------------------------------------------------------------------------------
 inputHandler (GameOver str) (EventKey (SpecialKey KeyEnter) Up _ _) gameState =
   do
-    setScore (unScore $ unPacMan gameState, str)
-    return gameState { unScene = Home }
-inputHandler (GameOver str) (EventKey (SpecialKey KeyBackspace) Up _ _) gameState
-  | not (null str)
-  = return gameState { unScene = GameOver (init str) }
-  | otherwise
-  = return gameState
-inputHandler (GameOver str) (EventKey (Char c) Up _ _) gameState
-  | length str <= 20 = return gameState { unScene = GameOver (str ++ [c]) }
-  | otherwise        = return gameState
+    setScore s
+    return gameState { unScene = Home, unScores = unScores gameState ++ [s] }
+    where s = (unScore $ unPacMan gameState, str)
+inputHandler (GameOver str) (EventKey (SpecialKey KeyBackspace) Up _ _) gameState = return $ backspace str gameState
+inputHandler (GameOver str) (EventKey (Char '\b')               Up _ _) gameState = return $ backspace str gameState
+inputHandler (GameOver str) (EventKey (SpecialKey KeySpace)     Up _ _) gameState = return $ typeChar str ' ' gameState
+inputHandler (GameOver str) (EventKey (Char c)                  Up (Modifiers _ Up Up) _) gameState = return $ typeChar str c gameState
 --------------------------------------------------------------------------------
 inputHandler _ _ gameState = return gameState
 --------------------------------------------------------------------------------
+
+backspace str gameState
+  | not (null str)
+  = gameState { unScene = GameOver (init str) }
+  | otherwise
+  = gameState
+
+typeChar str c gameState
+  | length str <= 20 && isAllowed c = gameState { unScene = GameOver (str ++ [c]) }
+  | otherwise                       = gameState
+  where 
+    allowed = ' ' : ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9']
+    isAllowed = (`any` allowed) . (==)
 
 moveFn :: StepFn -> GameState -> GameState
 moveFn dirFn gameState =

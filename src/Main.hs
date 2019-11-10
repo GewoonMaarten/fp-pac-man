@@ -33,16 +33,16 @@ main = do
         ) -- Display mode
         black -- Background Color
         30 -- Number of steps per second
-        intialGameState -- Initial world
-        (draw textures scores) -- (world -> IO Picture)
+        (intialGameState scores) -- Initial world
+        (draw textures) -- (world -> IO Picture)
         input -- (Event -> world -> IO world)
         update -- (Float -> world -> IO world)
 
-intialGameState :: GameState
-intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [] (mkStdGen 1) False
+intialGameState :: [Score] -> GameState
+intialGameState scores = GameState Home (Grid [] 0 0 0) initialPacMan [] (mkStdGen 1) scores False
 
-draw :: Textures -> [Score] -> GameState -> IO Picture
-draw textures scores gs = return (drawScene (unScene gs) textures scores gs)
+draw :: Textures -> GameState -> IO Picture
+draw textures gs = return (drawScene (unScene gs) textures gs)
 
 input :: Event -> GameState -> IO GameState
 input event gs = inputHandler (unScene gs) event gs

@@ -11,6 +11,7 @@ import           Config
 import           Paths_PacMan
 import           Data.List.Split
 import           Data.List
+import           Data.Ord
 import           Data.Function
 import           Utils.Text
 
@@ -18,20 +19,18 @@ type Score = (Int, String)
 
 setScore :: Score -> IO ()
 setScore (scr, str) = do
-  filePath <- getDataFileName scoreBoardFilePath
-  appendFile filePath (str ++ ", " ++ show scr ++ "\n")
+  appendFile scoreBoardFilePath (str ++ ", " ++ show scr ++ "\n")
 
 getScores :: IO [Score]
 getScores = do
-  filePath <- getDataFileName scoreBoardFilePath
-  contents <- readFile filePath
+  contents <- readFile scoreBoardFilePath
   return (map (toScore . splitOn ", ") $ lines contents)
  where
   toScore :: [String] -> Score
-  toScore [x, y] = (read x :: Int, y)
+  toScore [x, y] = (read y :: Int, x)
 
 formatScores :: [Score] -> [Text]
-formatScores = map printRow . take 3 . sortBy (compare `on` fst)
+formatScores = map printRow . take 3 . sortOn (Down . fst)
   where
     printRow (scr, str) = (str ++ gap str scr ++ show scr, Smallest)
     gap str scr = replicate (20 - (length str + length (show scr))) ' '

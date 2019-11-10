@@ -6,6 +6,7 @@ import           Utils.Graphics
 import           Graphics.Gloss          hiding ( Path )
 import           System.Random
 import           Utils.Path
+import           Utils.ScoreBoard
 
 data GameState = GameState {
     unScene :: Scene,
@@ -13,6 +14,7 @@ data GameState = GameState {
     unPacMan :: PacMan,
     unGhosts :: [Ghost],
     unRandom :: StdGen,
+    unScores :: [Score],
     unDebug :: Bool
 }
 

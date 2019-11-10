@@ -16,11 +16,11 @@ import           Utils.Text
 import           Utils.Path
 import           Utils.ScoreBoard
 
-drawScene :: Scene -> Textures -> [Score] -> GameState -> Picture
+drawScene :: Scene -> Textures -> GameState -> Picture
 --------------------------------------------------------------------------------
 -- Scene: Play
 --------------------------------------------------------------------------------
-drawScene Play ts@(Textures _ _ gt gat pt pdt _) _ gameState =
+drawScene Play ts@(Textures _ _ gt gat pt pdt _) gameState =
   pictures
     $  showGrid ts (unLevel gameState)
     ++ [ drawGhost g ts | g <- unGhosts gameState ]
@@ -44,7 +44,7 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) _ gameState =
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------
-drawScene Home ts _ _ = pictures [banner, txts]
+drawScene Home ts _ = pictures [banner, txts]
  where
   banner = translate 0 150 $ scale 0.4 0.4 $ textureBanner ts
   txts   = txtsToPic
@@ -65,7 +65,7 @@ drawScene Home ts _ _ = pictures [banner, txts]
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
-drawScene Pause _ _ _ = txtsToPic
+drawScene Pause _ _ = txtsToPic
   (floatLeft 40)
   0
   [ ("Pause"                        , Large)
@@ -76,10 +76,10 @@ drawScene Pause _ _ _ = txtsToPic
 --------------------------------------------------------------------------------
 -- Scene: GameOver
 --------------------------------------------------------------------------------
-drawScene (GameOver name) _ scores gameState =
+drawScene (GameOver name) _ gameState =
   let pacMan      = unPacMan gameState
       gameOverStr = if unLives pacMan == 0 then "Game Over" else "You Win!"
-      topThree = formatScores scores
+      topThree = formatScores $ unScores gameState
   in  txtsToPic
         (floatLeft 40)
         150
