@@ -12,7 +12,8 @@ data GameState = GameState {
     unLevel :: Grid,
     unPacMan :: PacMan,
     unGhosts :: [Ghost],
-    unRandom :: StdGen
+    unRandom :: StdGen,
+    unDebug :: Bool
 }
 
 addScore :: Int -> GameState -> GameState

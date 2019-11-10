@@ -6,6 +6,7 @@ import qualified Graphics.Gloss.Data.Point.Arithmetic
                                                as Pt
 import           Data.List
 import           Data.Ord
+import           Config
 
 type PathNode = (Int, Int)
 type NodeDistance = Float
@@ -143,3 +144,11 @@ follow canPass isFinished step p = f (isFinished p)
   f False _              True = fl (step p)
   -- finish
   f _     _              _    = [p]
+
+drawPath :: Color -> Path -> Picture
+drawPath c p@(P (_:ns) _) = (color c . line) $ map (addCenter . inverseY . (gridSize Pt.*)) nns
+  where
+    nns = actualLocation p : map toVector ns
+    addCenter = ((gridX, gridY) Pt.+ )
+    inverseY (x, y) = (x, -y)
+drawPath _ _ = Blank

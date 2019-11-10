@@ -13,6 +13,7 @@ import           Models.Level
 import           Models.PacMan
 import           Utils.Graphics
 import           Utils.Text
+import           Utils.Path
 import           Utils.ScoreBoard
 
 drawScene :: Scene -> Textures -> [Score] -> GameState -> Picture
@@ -23,9 +24,10 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) _ gameState =
   pictures
     $  showGrid ts (unLevel gameState)
     ++ [ drawGhost g ts | g <- unGhosts gameState ]
-    ++ [ showPacMan pt $ unPacMan gameState
-       , showScore $ unPacMan gameState
-       , showLives ts $ unPacMan gameState
+    ++ drawDebug
+    ++ [ showPacMan pt pm
+       , showScore pm
+       , showLives ts pm
        , txtsToPic
          (floatLeft 20)
          (-240)
@@ -33,6 +35,12 @@ drawScene Play ts@(Textures _ _ gt gat pt pdt _) _ gameState =
          , ("Press \"Esc\" to pause"           , Smallest)
          ]
        ]
+  where
+    pm = unPacMan gameState 
+    drawDebug = if unDebug gameState then 
+      [drawPath green $ unPath pm]
+      ++  [ (drawPath red . unPathG) g | g <- unGhosts gameState ]
+      else []
 --------------------------------------------------------------------------------
 -- Scene: Home
 --------------------------------------------------------------------------------

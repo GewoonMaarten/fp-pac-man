@@ -39,7 +39,7 @@ main = do
         update -- (Float -> world -> IO world)
 
 intialGameState :: GameState
-intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [] $ mkStdGen 1
+intialGameState = GameState Home (Grid [] 0 0 0) initialPacMan [] (mkStdGen 1) True
 
 draw :: Textures -> [Score] -> GameState -> IO Picture
 draw textures scores gs = return (drawScene (unScene gs) textures scores gs)

@@ -44,8 +44,12 @@ inputHandler Play (EventKey (SpecialKey KeyUp) _ _ _) gameState =
 -- Down Key
 inputHandler Play (EventKey (SpecialKey KeyDown) _ _ _) gameState =
   return $ moveFn (\(x, y) -> (x, y + 1)) gameState
+-- Escape Key
 inputHandler Play (EventKey (SpecialKey KeyEsc) Up _ _) gameState =
   return gameState { unScene = Pause }
+-- D Key
+inputHandler Play (EventKey (Char 'd') Up _ _) gameState =
+  return gameState { unDebug = not $ unDebug gameState }
 --------------------------------------------------------------------------------
 -- Scene: Pause
 --------------------------------------------------------------------------------
