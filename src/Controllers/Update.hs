@@ -62,15 +62,25 @@ updateScene Play dt =
     else gs'
     where (r, gs') = getRandom 1000 gs
 
-  randomSpawnFruitLocation gs = setFruit chosen gs'
+  randomSpawnFruitLocation gs = setFruit (100 + toMax ri) chosen gs''
    where
     available = filter (isCollected . snd) $ asList $ getGridItems $ unLevel gs
     (r, gs')  = getRandom (length available - 1) gs
-    chosen    = fst $ available !! r
+    chosen = fst $ available !! r
 
-  setFruit :: PathNode -> GameState -> GameState
-  setFruit l gs = gs
-    { unLevel = replaceGridItem l (Collectible Available Fruit 200) (unLevel gs)
+    -- we want higher numbers to be rare.
+    -- This indicates that double the score is 2 ^ 5 (32) times as rare
+    power = 5
+    rp = 1 / (fromIntegral power)
+    -- we require a decent integer range
+    mul = 10 ^ power
+    max = 1900
+    (ri, gs'') = getRandom (floor $ mul * (max ** rp)) gs'
+    toMax = floor . (^ power) . (/ mul) . fromIntegral
+
+  setFruit :: Int -> PathNode -> GameState -> GameState
+  setFruit v l gs = gs
+    { unLevel = replaceGridItem l (Collectible Available Fruit v) (unLevel gs)
     }
 
   wakeUpGhost :: GameState -> GameState
