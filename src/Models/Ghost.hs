@@ -37,10 +37,10 @@ performGhostUpdate canPass pmPath dt g = g
   pick :: GhostType -> PathNode -> [PathDirection] -> PathDirection
   -- Blinky is a chaser. (source Wikipedia)
   pick Blinky l ds = bestDirection l ds (source pmPath)
-  -- Inky is speedy and tries to position himself in front of pacman. (source Wikipedia)
-  pick Inky   l ds = bestDirection l ds (destination pmPath)
-  -- Pinky switches between Blinky and Inky behaviour
-  pick Pinky  l@(x, y) ds = bestDirection l ds d
+  -- Pinky is speedy and tries to position himself in front of pacman. (source Wikipedia)
+  pick Pinky   l ds = bestDirection l ds (destination pmPath)
+  -- Inky switches between Blinky and Inky behaviour
+  pick Inky  l@(x, y) ds = bestDirection l ds d
     where 
       d = if y < 10 then source pmPath else destination pmPath
   -- Clyde is dumb when it gets too close (source Wikipedia)

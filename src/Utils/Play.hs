@@ -14,8 +14,8 @@ initialPlay level gameState = gameState
   { unScene  = Play
   , unLevel  = buildGrid level
   , unGhosts = [ initialGhost Blinky
-               , initialGhost Inky
                , initialGhost Pinky
+               , initialGhost Inky
                , initialGhost Clyde
                ]
   , unPacMan = initialPacMan
@@ -24,8 +24,8 @@ initialPlay level gameState = gameState
 resetPlay :: GameState -> GameState
 resetPlay gameState = gameState
   { unGhosts = [ initialGhost Blinky
-               , initialGhost Inky
                , initialGhost Pinky
+               , initialGhost Inky
                , initialGhost Clyde
                ]
   }
